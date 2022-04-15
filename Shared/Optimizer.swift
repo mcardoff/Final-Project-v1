@@ -96,7 +96,7 @@ class OptimizationOfPath {
             let k = curvatureVal(i: i),
                 dx = xs[i]-xs[i-1],
                 dy = ys[i]-ys[i-1],
-                ds = sqrt(abs(dx*dx+dy*dy))
+                ds = sqrt(dx*dx+dy*dy)
             costVal += sqrt(abs(k))*ds
         }
         return String("cost: \(costVal)\n")
