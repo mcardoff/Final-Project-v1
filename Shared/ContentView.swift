@@ -14,11 +14,19 @@ struct ContentView: View {
     
     var body: some View {
         VStack{
-            drawingView(optObj: $optimizationObj)
-                .padding()
-                .aspectRatio(1, contentMode: .fit)
-                .drawingGroup()
-            
+            TabView {
+                drawingView(optObj: $optimizationObj)
+                    .padding()
+                    .aspectRatio(1, contentMode: .fit)
+                    .drawingGroup()
+                    .tabItem {
+                        Text("Track Plot")
+                    }
+                TextEditor(text: $text)
+                    .tabItem {
+                        Text("Curvature Vals")
+                    }
+            }
             Button("Calculate Stuff", action: self.calculate)
                 .padding()
             
@@ -26,9 +34,7 @@ struct ContentView: View {
     }
     
     func calculate() {
-        for i in 0..<150 {
-            
-        }
+        text = optimizationObj.ensureConstraints()
     }
 }
 

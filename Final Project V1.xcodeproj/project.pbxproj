@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		2C6C260D2800CBFD00C0A7C3 /* DrawingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C6C260C2800CBFD00C0A7C3 /* DrawingView.swift */; };
 		2C6C260E2800CC0400C0A7C3 /* DrawingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C6C260C2800CBFD00C0A7C3 /* DrawingView.swift */; };
+		2C6C26102800DE7800C0A7C3 /* TrackObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C6C260F2800DE7800C0A7C3 /* TrackObject.swift */; };
+		2C6C26112800DE7800C0A7C3 /* TrackObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C6C260F2800DE7800C0A7C3 /* TrackObject.swift */; };
 		2CDE779C2800C1B900C190D0 /* Optimizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CDE779B2800C1B900C190D0 /* Optimizer.swift */; };
 		2CDE779D2800C1B900C190D0 /* Optimizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CDE779B2800C1B900C190D0 /* Optimizer.swift */; };
 		2CFB7FC627FBAE2C00C0A8F8 /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CFB7FC527FBAE2C00C0A8F8 /* Tests_iOS.swift */; };
@@ -42,6 +44,7 @@
 
 /* Begin PBXFileReference section */
 		2C6C260C2800CBFD00C0A7C3 /* DrawingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingView.swift; sourceTree = "<group>"; };
+		2C6C260F2800DE7800C0A7C3 /* TrackObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackObject.swift; sourceTree = "<group>"; };
 		2CDE779B2800C1B900C190D0 /* Optimizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Optimizer.swift; sourceTree = "<group>"; };
 		2CFB7FAD27FBAE2A00C0A8F8 /* Final_Project_V1App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Final_Project_V1App.swift; sourceTree = "<group>"; };
 		2CFB7FAE27FBAE2A00C0A8F8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -107,6 +110,7 @@
 				2C6C260C2800CBFD00C0A7C3 /* DrawingView.swift */,
 				2CFB7FAE27FBAE2A00C0A8F8 /* ContentView.swift */,
 				2CDE779B2800C1B900C190D0 /* Optimizer.swift */,
+				2C6C260F2800DE7800C0A7C3 /* TrackObject.swift */,
 				2CFB7FAF27FBAE2C00C0A8F8 /* Assets.xcassets */,
 			);
 			path = Shared;
@@ -307,6 +311,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C6C26102800DE7800C0A7C3 /* TrackObject.swift in Sources */,
 				2CFB7FD727FBAE2C00C0A8F8 /* ContentView.swift in Sources */,
 				2CDE779C2800C1B900C190D0 /* Optimizer.swift in Sources */,
 				2CFB7FD527FBAE2C00C0A8F8 /* Final_Project_V1App.swift in Sources */,
@@ -318,6 +323,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C6C26112800DE7800C0A7C3 /* TrackObject.swift in Sources */,
 				2CFB7FD827FBAE2C00C0A8F8 /* ContentView.swift in Sources */,
 				2CDE779D2800C1B900C190D0 /* Optimizer.swift in Sources */,
 				2CFB7FD627FBAE2C00C0A8F8 /* Final_Project_V1App.swift in Sources */,

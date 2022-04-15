@@ -15,11 +15,7 @@ struct drawingView: View {
         
         
         ZStack{
-            drawPath(xs: optObj.xits, ys: optObj.yits)
-                .stroke(Color.black)
-            drawPath(xs: optObj.xots, ys: optObj.yots)
-                .stroke(Color.black)
-            drawPath(xs: optObj.xcs, ys: optObj.ycs)
+            drawPath(xs: optObj.track.xcs, ys: optObj.track.ycs)
                 .stroke(Color.blue)
             drawPath(xs: optObj.xs, ys: optObj.ys)
                 .stroke(Color.red)

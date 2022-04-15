@@ -9,31 +9,10 @@ import Foundation
 
 
 class OptimizationOfPath {
-    var KMAX : Double, TRACKWIDTH : Double
-    var xs : [Double], ys : [Double]
-    var xcs : [Double], ycs : [Double]
-    var xits : [Double], yits : [Double]
-    var xots : [Double], yots : [Double]
-//    var curvatureVals
     
-    init() {
-        // do basic one as an example
-        KMAX = 0.5
-        TRACKWIDTH = 1.50
-        var thetavals : [Double] = [], n = 150
-        for i in 0..<n { thetavals.append(Double(i) * Double.pi / (2.0 * Double(n))) }
-        xs = thetavals.map {(theta: Double) -> Double in return 1.0*cos(theta)}
-        ys = thetavals.map {(theta: Double) -> Double in return 1.0*sin(theta)}
-        
-        xcs = thetavals.map {(theta: Double) -> Double in return 1.1*cos(theta)}
-        ycs = thetavals.map {(theta: Double) -> Double in return 1.1*sin(theta)}
-        
-        xits = thetavals.map {(theta: Double) -> Double in return (1.1-0.2)*cos(theta)}
-        yits = thetavals.map {(theta: Double) -> Double in return (1.1-0.2)*sin(theta)}
-        
-        xots = thetavals.map {(theta: Double) -> Double in return (1.1+0.2)*cos(theta)}
-        yots = thetavals.map {(theta: Double) -> Double in return (1.1+0.2)*sin(theta)}
-    }
+    let track = Track(), VMAX = 100.0
+    var xs : [Double], ys : [Double] // a path along track
+    
     
 //    init(kmax: Double, trackwidth: Double, xs: [Double], ys: [Double]) {
 //        if(kmax > 0.0) {
@@ -51,6 +30,29 @@ class OptimizationOfPath {
 //        self.ys = ys
 //    }
     
+    init() {
+        // inner circle track
+        var thetavals : [Double] = [], n = 150
+        for i in 0..<n { thetavals.append(Double(i) * Double.pi / (2.0 * Double(n))) }
+        
+        xs = thetavals.map {(theta: Double) -> Double in return 1.0*cos(theta)}
+        ys = thetavals.map {(theta: Double) -> Double in return 1.0*sin(theta)}
+    }
+    
+    func ensureConstraints() -> String {
+        var retStr = ""
+        for i in 1..<xs.count-1 {
+            retStr += "\(i): "
+            let k = curvatureVal(i: i), v = calculateVelocity(i: i)
+            if (k > track.KMAX) { retStr += "k>kMAX!!!! " }
+            if (v > VMAX) { retStr += "v>vMAX!!!! " }
+            if (k * v * v - track.FRICTION * track.GRAVITY > 0) { retStr += "FRICTION BAD" }
+            retStr += "\n"
+        }
+        retStr += calculateTimeCost()
+        return retStr
+    }
+    
     func curvatureVal(i: Int) -> Double {
         let dxb = xs[i]-xs[i-1],
             dyb = ys[i]-ys[i-1],
@@ -64,16 +66,39 @@ class OptimizationOfPath {
         return termOne-termTwo
     }
     
+    func calculateVelocity(i: Int) -> Double {
+        let k = curvatureVal(i: i),
+        mug = track.GRAVITY*track.FRICTION
+        return sqrt(k / mug)
+    }
+    
     func kmaxConstraint(i: Int) -> Bool {
         let kval = curvatureVal(i: i)
-        return kval <= KMAX
+        return kval <= track.KMAX
     }
     
     func onTrackConstraint(i: Int, xcs: [Double], ycs: [Double]) -> Bool {
         let offsetX = xs[i] - xcs[i],
             offsetY = ys[i] - ycs[i],
             dist = sqrt(offsetX*offsetX + offsetY*offsetY)
-        return dist < 0.5 * TRACKWIDTH
+        return dist < 0.5 * track.TRACKWIDTH
         
+    }
+    
+    func calculateTimeCost() -> String {
+        //        _
+        //       /   1          __     1
+        // t =   |  --- ds  =  \     ---- Δs
+        //      _/   v         /__   v[i]
+        //                      i
+        var costVal = 0.0
+        for i in 1..<xs.count-1 {
+            let k = curvatureVal(i: i),
+                dx = xs[i]-xs[i-1],
+                dy = ys[i]-ys[i-1],
+                ds = sqrt(abs(dx*dx+dy*dy))
+            costVal += sqrt(abs(k))*ds
+        }
+        return String("cost: \(costVal)\n")
     }
 }
