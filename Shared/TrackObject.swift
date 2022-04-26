@@ -23,8 +23,9 @@ class Track {
         var thetavals : [Double] = [], n = 150
         for i in 0..<n { thetavals.append(Double(i) * Double.pi / (2.0 * Double(n))) }
         
-        xcs = thetavals.map {(theta: Double) -> Double in return 1.1*cos(theta)}
-        ycs = thetavals.map {(theta: Double) -> Double in return 1.1*sin(theta)}
+        let rad = 1.1
+        xcs = thetavals.map {(theta: Double) -> Double in return rad*cos(theta)}
+        ycs = thetavals.map {(theta: Double) -> Double in return rad*sin(theta)}
         
         name = "Test"
     }

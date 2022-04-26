@@ -33,10 +33,15 @@ class OptimizationOfPath {
     init() {
         // inner circle track
         var thetavals : [Double] = [], n = 150
-        for i in 0..<n { thetavals.append(Double(i) * Double.pi / (2.0 * Double(n))) }
+        for i in 0..<n/2 { thetavals.append(Double(i) * Double.pi / (2.0 * Double(n))) }
+        let dx = 0.01
         
         xs = thetavals.map {(theta: Double) -> Double in return 1.0*cos(theta)}
         ys = thetavals.map {(theta: Double) -> Double in return 1.0*sin(theta)}
+        for _ in n/2...n {
+            xs.append(xs.last! - dx)
+            ys.append(ys.last!)
+        }
     }
     
     func ensureConstraints() -> String {
@@ -44,8 +49,9 @@ class OptimizationOfPath {
         for i in 1..<xs.count-1 {
             retStr += "\(i): "
             let k = curvatureVal(i: i), v = calculateVelocity(i: i)
-            if (k > track.KMAX) { retStr += "k>kMAX!!!! " }
-            if (v > VMAX) { retStr += "v>vMAX!!!! " }
+            if (!kmaxConstraint(i: i)) { retStr += "k>kMAX!!!! " }
+            if (!onTrackConstraint(i: i)) { retStr += "Off track!!!! " }
+            if (!curvatureCenterConstraint(i: i)) { retStr += "Weird one not satisfied " }
             if (k * v * v - track.FRICTION * track.GRAVITY > 0) { retStr += "FRICTION BAD" }
             retStr += "\n"
         }
@@ -77,12 +83,19 @@ class OptimizationOfPath {
         return kval <= track.KMAX
     }
     
-    func onTrackConstraint(i: Int, xcs: [Double], ycs: [Double]) -> Bool {
-        let offsetX = xs[i] - xcs[i],
-            offsetY = ys[i] - ycs[i],
-            dist = sqrt(offsetX*offsetX + offsetY*offsetY)
-        return dist < 0.5 * track.TRACKWIDTH
+    func onTrackConstraint(i: Int) -> Bool {
+        let offsetX = xs[i] - track.xcs[i],
+            offsetY = ys[i] - track.ycs[i],
+            dist = offsetX*offsetX + offsetY*offsetY
+        return dist < 0.25 * track.TRACKWIDTH * track.TRACKWIDTH
         
+    }
+    
+    func curvatureCenterConstraint(i: Int) -> Bool {
+        let offsetX = xs[i] - track.xcs[i],
+            offsetY = ys[i] - track.ycs[i],
+            curvature = curvatureVal(i: i)
+        return abs(offsetX + curvature * offsetY) <= 1.0e-5
     }
     
     func calculateTimeCost() -> String {
