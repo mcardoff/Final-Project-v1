@@ -34,6 +34,7 @@ struct ContentView: View {
     }
     
     func calculate() {
+        testTrace()
         text = optimizationObj.ensureConstraints()
     }
 }
