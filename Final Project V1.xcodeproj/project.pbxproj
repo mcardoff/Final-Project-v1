@@ -7,12 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C2F15B82819FC6C00F8E0AC /* EndCriteria.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C2F15B72819FC6C00F8E0AC /* EndCriteria.swift */; };
+		2C2F15B92819FC6C00F8E0AC /* EndCriteria.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C2F15B72819FC6C00F8E0AC /* EndCriteria.swift */; };
+		2C2F15BB281A000600F8E0AC /* SolutionMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C2F15BA281A000600F8E0AC /* SolutionMethod.swift */; };
+		2C2F15BC281A000600F8E0AC /* SolutionMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C2F15BA281A000600F8E0AC /* SolutionMethod.swift */; };
 		2C6C260D2800CBFD00C0A7C3 /* DrawingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C6C260C2800CBFD00C0A7C3 /* DrawingView.swift */; };
 		2C6C260E2800CC0400C0A7C3 /* DrawingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C6C260C2800CBFD00C0A7C3 /* DrawingView.swift */; };
 		2C6C26102800DE7800C0A7C3 /* TrackObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C6C260F2800DE7800C0A7C3 /* TrackObject.swift */; };
 		2C6C26112800DE7800C0A7C3 /* TrackObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C6C260F2800DE7800C0A7C3 /* TrackObject.swift */; };
-		2C6C2613281374D500C0A7C3 /* GradientDescent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C6C2612281374D500C0A7C3 /* GradientDescent.swift */; };
-		2C6C2614281374D500C0A7C3 /* GradientDescent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C6C2612281374D500C0A7C3 /* GradientDescent.swift */; };
 		2C6C26162818953C00C0A7C3 /* Constraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C6C26152818953C00C0A7C3 /* Constraint.swift */; };
 		2C6C26172818953C00C0A7C3 /* Constraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C6C26152818953C00C0A7C3 /* Constraint.swift */; };
 		2C6C261A28189A9400C0A7C3 /* LASwift in Frameworks */ = {isa = PBXBuildFile; productRef = 2C6C261928189A9400C0A7C3 /* LASwift */; };
@@ -52,9 +54,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2C2F15B72819FC6C00F8E0AC /* EndCriteria.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndCriteria.swift; sourceTree = "<group>"; };
+		2C2F15BA281A000600F8E0AC /* SolutionMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolutionMethod.swift; sourceTree = "<group>"; };
 		2C6C260C2800CBFD00C0A7C3 /* DrawingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingView.swift; sourceTree = "<group>"; };
 		2C6C260F2800DE7800C0A7C3 /* TrackObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackObject.swift; sourceTree = "<group>"; };
-		2C6C2612281374D500C0A7C3 /* GradientDescent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientDescent.swift; sourceTree = "<group>"; };
 		2C6C26152818953C00C0A7C3 /* Constraint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constraint.swift; sourceTree = "<group>"; };
 		2C6C261B28189E2300C0A7C3 /* LinearAlgebraTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinearAlgebraTest.swift; sourceTree = "<group>"; };
 		2C6C261E2818FC8A00C0A7C3 /* CostFunction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CostFunction.swift; sourceTree = "<group>"; };
@@ -124,11 +127,12 @@
 				2C6C260C2800CBFD00C0A7C3 /* DrawingView.swift */,
 				2CFB7FAE27FBAE2A00C0A8F8 /* ContentView.swift */,
 				2C6C261B28189E2300C0A7C3 /* LinearAlgebraTest.swift */,
-				2C6C2612281374D500C0A7C3 /* GradientDescent.swift */,
 				2C6C260F2800DE7800C0A7C3 /* TrackObject.swift */,
 				2CDE779B2800C1B900C190D0 /* Optimizer.swift */,
 				2C6C26152818953C00C0A7C3 /* Constraint.swift */,
 				2C6C261E2818FC8A00C0A7C3 /* CostFunction.swift */,
+				2C2F15BA281A000600F8E0AC /* SolutionMethod.swift */,
+				2C2F15B72819FC6C00F8E0AC /* EndCriteria.swift */,
 				2CFB7FAF27FBAE2C00C0A8F8 /* Assets.xcassets */,
 			);
 			path = Shared;
@@ -339,10 +343,11 @@
 				2C6C26102800DE7800C0A7C3 /* TrackObject.swift in Sources */,
 				2CFB7FD727FBAE2C00C0A8F8 /* ContentView.swift in Sources */,
 				2C6C26162818953C00C0A7C3 /* Constraint.swift in Sources */,
+				2C2F15B82819FC6C00F8E0AC /* EndCriteria.swift in Sources */,
 				2C6C261C28189E2300C0A7C3 /* LinearAlgebraTest.swift in Sources */,
 				2CDE779C2800C1B900C190D0 /* Optimizer.swift in Sources */,
+				2C2F15BB281A000600F8E0AC /* SolutionMethod.swift in Sources */,
 				2CFB7FD527FBAE2C00C0A8F8 /* Final_Project_V1App.swift in Sources */,
-				2C6C2613281374D500C0A7C3 /* GradientDescent.swift in Sources */,
 				2C6C260D2800CBFD00C0A7C3 /* DrawingView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -355,10 +360,11 @@
 				2C6C26112800DE7800C0A7C3 /* TrackObject.swift in Sources */,
 				2CFB7FD827FBAE2C00C0A8F8 /* ContentView.swift in Sources */,
 				2C6C26172818953C00C0A7C3 /* Constraint.swift in Sources */,
+				2C2F15B92819FC6C00F8E0AC /* EndCriteria.swift in Sources */,
 				2C6C261D28189E2300C0A7C3 /* LinearAlgebraTest.swift in Sources */,
 				2CDE779D2800C1B900C190D0 /* Optimizer.swift in Sources */,
+				2C2F15BC281A000600F8E0AC /* SolutionMethod.swift in Sources */,
 				2CFB7FD627FBAE2C00C0A8F8 /* Final_Project_V1App.swift in Sources */,
-				2C6C2614281374D500C0A7C3 /* GradientDescent.swift in Sources */,
 				2C6C260E2800CC0400C0A7C3 /* DrawingView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
