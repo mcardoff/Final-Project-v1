@@ -17,21 +17,19 @@ class CostFunction {
     }
     
     // define how to take the gradient!
-    func gradient(parameters : Matrix) -> Matrix {
+    func gradient(grad: inout Matrix, parameters : Matrix){
         var fp : Double, fm : Double
-        var params = parameters
+        var tempparams = parameters
         let paramcount = parameters.cols * parameters.rows
-        var grad = Matrix(params.rows,params.cols)
         
         for i in 0..<paramcount {
-            params[i] += finiteDiff
-            fp = costValue(params: params)
-            params[i] -= 2.0 * finiteDiff
-            fm = costValue(params: params)
+            tempparams[i] += finiteDiff
+            fp = costValue(params: parameters)
+            tempparams[i] -= 2.0 * finiteDiff
+            fm = costValue(params: parameters)
             grad[i] = 0.5 * (fp - fm) / finiteDiff
-            params[i] = parameters[i]
+            tempparams[i] = parameters[i]
         }
-        return grad
     }
     
 }
