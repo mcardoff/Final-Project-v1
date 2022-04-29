@@ -16,6 +16,10 @@ class CostFunction {
         return 1.0e10 // should be overwritten in subclass
     }
     
+    func costValues(parameters : Matrix) -> Matrix {
+        return Matrix(Array(repeating: 0.0, count: 0))
+    }
+    
     // define how to take the gradient!
     func gradient(grad: inout Matrix, parameters : Matrix){
         var fp : Double, fm : Double
@@ -32,4 +36,8 @@ class CostFunction {
         }
     }
     
+    func valueAndGradient(grad : inout Matrix, parameters : Matrix) -> Double {
+        gradient(grad: &grad, parameters: parameters)
+        return costValue(params: parameters)
+    }
 }
