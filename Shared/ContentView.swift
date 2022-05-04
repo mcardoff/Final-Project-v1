@@ -36,7 +36,7 @@ struct ContentView: View {
     
     func calculate() {
         var endCriteria = EndCriteria(maxIterations: 1000, maxStationaryStateIterations: 100, rootEpsilon: 1.0e-8, functionEpsilon: 1.0e-9, gradientNormEpsilon: 1.0e-5)
-        var costFunc = timeCostFunction()
+        var costFunc = testCostFunction()
         var constraint = NoConstraint()
         var initialValue = Matrix(Array(repeating: 1.0, count:1))
         var problem = Problem(costFunction: costFunc, constraint: constraint, initialValue: initialValue)
