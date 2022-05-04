@@ -82,6 +82,14 @@ class RacingLineConstraints : Constraint {
         return k * v * v - mug <= 1.0e-5
     }
     
+    func dsConstraint(xs: [Double], ys: [Double], i: Int) -> Bool {
+        // ensure the car isn't warping to different points on the track
+        let dx = xs[i] - xs[i-1],
+            dy = ys[i] - ys[i-1],
+            ds = dx*dx + dy*dy
+        return ds < 1.0 // arbitrary for now
+    }
+    
     override func test(parameters: Matrix) -> Bool {
         let (xs,ys) = paramtoxy(parameters: parameters)
         for i in 1..<(parameters.rows-1) {
