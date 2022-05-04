@@ -8,15 +8,57 @@
 import Foundation
 import LASwift
 
-class timeCostFunction : CostFunction {
-    var N: Int = 150 // this many steps around the circuit
+// use overwritten init in problem formulation
+class RacingLineProblem {
+    var costFunction : timeCostFunction
+    var constraint : RacingLineConstraints
+    var currentXValues : [Double]
+    var currentYValues : [Double]
     
-    override func costValue(params: Matrix) -> Double {
+    var functionValue = 0.0
+    var squaredNorm = 0.0
+    var functionEvaluation = 0
+    var gradientEvaluation = 0
+    
+    init(costFunction : timeCostFunction, constraint : RacingLineConstraints, initialXValues : [Double], initialYValues : [Double]) {
+        self.costFunction = costFunction
+        self.constraint = constraint
+        self.currentXValues = initialXValues
+        self.currentYValues = initialYValues
+    }
+    
+    func reset() {
+        functionEvaluation = 0
+        gradientEvaluation = 0
+        functionValue = 0.0
+        squaredNorm = 0.0
+    }
+    
+    func value(xs: [Double], ys: [Double]) -> Double {
+        functionEvaluation += 1
+        return costFunction.costValue(xs: xs, ys: ys)
+    }
+    
+    func gradient(gradx : inout [Double], grady : inout [Double], xs: [Double], ys: [Double]) {
+        gradientEvaluation += 1
+        costFunction.gradient(gradx: &gradx, grady: &grady, xs: xs, ys: ys)
+    }
+    
+    func valueAndGradient(gradx : inout [Double], grady : inout [Double], xs: [Double], ys: [Double]) -> Double {
+        functionEvaluation += 1
+        gradientEvaluation += 1
+        return costFunction.valueAndGradient(gradx: &gradx, grady: &grady, xs: xs, ys: ys)
+    }
+}
+
+class timeCostFunction : CostFunction {
+//    var N: Int = 150 // this many steps around the circuit
+    
+    func costValue(xs: [Double], ys: [Double]) -> Double {
         // structure of parameters:
         // [x0,y0,x1,y1...]
         var costVal = 0.0
-        let (xs,ys) = paramtoxy(parameters: params)
-        for i in 1..<N-1 {
+        for i in 1..<xs.count-1 {
             let k = curvatureVal(xs: xs, ys: ys, i: i),
                 dx = xs[i]-xs[i-1],
                 dy = ys[i]-ys[i-1],
@@ -25,6 +67,37 @@ class timeCostFunction : CostFunction {
         }
         return costVal
     }
+    
+    func gradient(gradx: inout [Double], grady: inout [Double], xs: [Double], ys: [Double]){
+        var fp : Double, fm : Double
+        var tempparams = xs, tempxs = xs, tempys = ys
+        tempparams.append(contentsOf: ys)
+        let copy = tempparams
+        
+        for i in 0..<tempparams.count {
+            tempparams[i] += finiteDiff
+            if 0 <= i && i < xs.count { tempxs[i] += finiteDiff /* perturb only x */ }
+            else { tempys[i-xs.count] += finiteDiff }
+            fp = costValue(xs: tempxs, ys: tempys)
+            tempparams[i] -= 2.0*finiteDiff
+            if 0 <= i && i < xs.count { tempxs[i] -= 2.0*finiteDiff /* perturb only x */ }
+            else { tempys[i-xs.count] -= 2.0*finiteDiff }
+            fm = costValue(xs: tempxs, ys: tempys)
+            let gradval = 0.5 * (fp - fm) / finiteDiff
+            if 0 <= i && i < xs.count { gradx[i] = gradval }
+            else { grady[i-xs.count] = gradval }
+//            grad[i] = 0.5 * (fp - fm) / finiteDiff
+            tempparams[i] = copy[i]
+            tempxs = xs
+            tempys = ys
+        }
+    }
+    
+    func valueAndGradient(gradx: inout [Double], grady: inout [Double], xs: [Double], ys: [Double]) -> Double {
+        self.gradient(gradx: &gradx, grady: &grady, xs: xs, ys: ys)
+        return costValue(xs: xs, ys: ys)
+    }
+    
 }
 
 class RacingLineConstraints : Constraint {
@@ -90,9 +163,9 @@ class RacingLineConstraints : Constraint {
         return ds < 1.0 // arbitrary for now
     }
     
-    override func test(parameters: Matrix) -> Bool {
-        let (xs,ys) = paramtoxy(parameters: parameters)
-        for i in 1..<(parameters.rows-1) {
+    func test(xs: [Double], ys: [Double]) -> Bool {
+//        let (xs,ys) = paramtoxy(parameters: parameters)
+        for i in 1..<(xs.count-1) {
             if (!kmaxConstraint(xs: xs, ys: ys, i: i)) { return false }
             if (!onTrackConstraint(xs: xs, ys: ys, i: i)) { return false }
             if (!curvatureCenterConstraint(xs: xs, ys: ys, i: i)) { return false }
@@ -100,6 +173,10 @@ class RacingLineConstraints : Constraint {
         }
         return true
     }
+}
+
+class RacingEndCriteria : EndCriteria {
+    
 }
 
 // helper funcs

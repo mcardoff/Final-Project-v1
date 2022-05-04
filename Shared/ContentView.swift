@@ -35,11 +35,13 @@ struct ContentView: View {
     }
     
     func calculate() {
+        let track = Track()
+        
         var endCriteria = EndCriteria(maxIterations: 1000, maxStationaryStateIterations: 100, rootEpsilon: 1.0e-8, functionEpsilon: 1.0e-9, gradientNormEpsilon: 1.0e-5)
-        var costFunc = testCostFunction()
-        var constraint = NoConstraint()
-        var initialValue = Matrix(Array(repeating: 1.0, count:1))
-        var problem = Problem(costFunction: costFunc, constraint: constraint, initialValue: initialValue)
+        var costFunc = timeCostFunction()
+        var constraint = RacingLineConstraints()
+        var initialXValue = track.xcs, initialYValue = track.ycs
+        var problem = RacingLineProblem(costFunction: costFunc, constraint: constraint, initialXValues: initialXValue, initialYValues: initialYValue)
         var solver = LineSearchBasedMethod(lineSearch: ArmijoLineSearch())
         var solved = solver.minimize(problem: &problem, endCriteria: endCriteria)
         print(problem.currentValue)

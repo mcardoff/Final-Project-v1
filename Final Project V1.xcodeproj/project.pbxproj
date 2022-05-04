@@ -38,6 +38,8 @@
 		2CFB7FD827FBAE2C00C0A8F8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CFB7FAE27FBAE2A00C0A8F8 /* ContentView.swift */; };
 		2CFB7FD927FBAE2C00C0A8F8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2CFB7FAF27FBAE2C00C0A8F8 /* Assets.xcassets */; };
 		2CFB7FDA27FBAE2C00C0A8F8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2CFB7FAF27FBAE2C00C0A8F8 /* Assets.xcassets */; };
+		2CFCD390282308ED00A3882F /* GradientDescent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CFCD38F282308ED00A3882F /* GradientDescent.swift */; };
+		2CFCD391282308ED00A3882F /* GradientDescent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CFCD38F282308ED00A3882F /* GradientDescent.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -80,6 +82,7 @@
 		2CFB7FCD27FBAE2C00C0A8F8 /* Tests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CFB7FD127FBAE2C00C0A8F8 /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
 		2CFB7FD327FBAE2C00C0A8F8 /* Tests_macOSLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOSLaunchTests.swift; sourceTree = "<group>"; };
+		2CFCD38F282308ED00A3882F /* GradientDescent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientDescent.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -134,6 +137,7 @@
 				2CFB7FAE27FBAE2A00C0A8F8 /* ContentView.swift */,
 				2C6C260F2800DE7800C0A7C3 /* TrackObject.swift */,
 				2C2F15C02821FB5500F8E0AC /* LineSearch.swift */,
+				2CFCD38F282308ED00A3882F /* GradientDescent.swift */,
 				2CDE779B2800C1B900C190D0 /* Optimizer.swift */,
 				2C6C26152818953C00C0A7C3 /* Constraint.swift */,
 				2C6C261E2818FC8A00C0A7C3 /* CostFunction.swift */,
@@ -355,6 +359,7 @@
 				2C2F15B82819FC6C00F8E0AC /* EndCriteria.swift in Sources */,
 				2C2F15BE281C5D3C00F8E0AC /* Formulated Problem.swift in Sources */,
 				2C2F15C42822C9FA00F8E0AC /* TrackProblem.swift in Sources */,
+				2CFCD390282308ED00A3882F /* GradientDescent.swift in Sources */,
 				2CDE779C2800C1B900C190D0 /* Optimizer.swift in Sources */,
 				2C2F15BB281A000600F8E0AC /* SolutionMethod.swift in Sources */,
 				2CFB7FD527FBAE2C00C0A8F8 /* Final_Project_V1App.swift in Sources */,
@@ -374,6 +379,7 @@
 				2C2F15B92819FC6C00F8E0AC /* EndCriteria.swift in Sources */,
 				2C2F15BF281C5D3C00F8E0AC /* Formulated Problem.swift in Sources */,
 				2C2F15C52822C9FA00F8E0AC /* TrackProblem.swift in Sources */,
+				2CFCD391282308ED00A3882F /* GradientDescent.swift in Sources */,
 				2CDE779D2800C1B900C190D0 /* Optimizer.swift in Sources */,
 				2C2F15BC281A000600F8E0AC /* SolutionMethod.swift in Sources */,
 				2CFB7FD627FBAE2C00C0A8F8 /* Final_Project_V1App.swift in Sources */,
