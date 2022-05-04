@@ -41,3 +41,9 @@ class CostFunction {
         return costValue(params: parameters)
     }
 }
+
+class timeCostFunction : CostFunction {
+    override func costValue(params: Matrix) -> Double {
+        return params[0] * params[0]
+    }
+}
