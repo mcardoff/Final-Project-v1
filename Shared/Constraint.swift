@@ -41,6 +41,12 @@ class Constraint {
     }
 }
 
+class NoConstraint : Constraint {
+    override func test(parameters: Matrix) -> Bool {
+        return true
+    }
+}
+
 class RacingLineConstraints : Constraint {
     
     let xcs : [Double], ycs : [Double]
