@@ -11,29 +11,11 @@ import LASwift
 class timeCostFunction : CostFunction {
     var N: Int = 150 // this many steps around the circuit
     
-    func curvatureVal(xs: [Double], ys: [Double], i: Int) -> Double {
-        let dxb = xs[i]-xs[i-1],
-            dyb = ys[i]-ys[i-1],
-            dsb = sqrt(dxb*dxb + dyb*dyb),
-            dxf = xs[i+1]-xs[i],
-            dyf = ys[i+1]-xs[i],
-            dsf = sqrt(dxf*dxf + dyf*dyf),
-            termOne = (dxb/dsb + dxf/dsf) * (dyf/dsf - dyb/dsb)/(dsf + dsb),
-            termTwo = (dyb/dsb + dyf/dsf) * (dxf/dsf - dxb/dsb)/(dsf + dsb)
-        
-        return termOne-termTwo
-    }
-    
     override func costValue(params: Matrix) -> Double {
         // structure of parameters:
         // [x0,y0,x1,y1...]
         var costVal = 0.0
-        var xs : [Double] = [], ys : [Double] = []
-        // easier to work with xs and ys than a parameter matrix
-        for i in 0..<params.flat.count {
-            if i % 2 == 0 { xs.append(params[i]) }
-            else { ys.append(params[i]) }
-        }
+        let (xs,ys) = paramtoxy(parameters: params)
         for i in 1..<N-1 {
             let k = curvatureVal(xs: xs, ys: ys, i: i),
                 dx = xs[i]-xs[i-1],
@@ -60,12 +42,12 @@ class RacingLineConstraints : Constraint {
         ycs = thetavals.map {(theta: Double) -> Double in return rad*sin(theta)}
     }
     
-    func curvatureVal(i: Int, param: Matrix) -> Double {
-        let dxb = param[i]-param[i-1],
-            dyb = param[param.cols+i]-param[param.cols+i-1],
+    func curvatureVal(xs: [Double], ys: [Double], i: Int) -> Double {
+        let dxb = xs[i]-xs[i-1],
+            dyb = ys[i]-ys[i-1],
             dsb = sqrt(dxb*dxb + dyb*dyb),
-            dxf = param[i+1]-param[i],
-            dyf = param[param.cols+i+1]-param[param.cols+i],
+            dxf = xs[i+1]-xs[i],
+            dyf = ys[i+1]-ys[i],
             dsf = sqrt(dxf*dxf + dyf*dyf),
             termOne = (dxb/dsb + dxf/dsf) * (dyf/dsf - dyb/dsb)/(dsf + dsb),
             termTwo = (dyb/dsb + dyf/dsf) * (dxf/dsf - dxb/dsb)/(dsf + dsb)
@@ -73,42 +55,65 @@ class RacingLineConstraints : Constraint {
         return termOne-termTwo
     }
     
-    func kmaxConstraint(i: Int, param: Matrix) -> Bool {
-        let kval = curvatureVal(i: i, param: param)
+    func kmaxConstraint(xs: [Double], ys: [Double], i: Int) -> Bool {
+        let kval = curvatureVal(xs: xs, ys: ys, i: i)
         return kval <= self.KMAX
     }
     
-    func onTrackConstraint(i: Int, param: Matrix) -> Bool {
-        let offsetX = param[i] - self.xcs[i],
-            offsetY = param[param.cols+i] - self.ycs[i],
+    func onTrackConstraint(xs: [Double], ys: [Double], i: Int) -> Bool {
+        let offsetX = xs[i] - self.xcs[i],
+            offsetY = ys[i] - self.ycs[i],
             dist = offsetX*offsetX + offsetY*offsetY
         return dist < 0.25 * self.TRACKWIDTH * self.TRACKWIDTH
         
     }
     
-    func curvatureCenterConstraint(i: Int, param: Matrix) -> Bool {
-        let offsetX = param[i] - self.xcs[i],
-            offsetY = param[param.cols+i] - self.ycs[i],
-            curvature = curvatureVal(i: i, param: param)
+    func curvatureCenterConstraint(xs: [Double], ys: [Double], i: Int) -> Bool {
+        let offsetX = xs[i] - self.xcs[i],
+            offsetY = ys[i] - self.ycs[i],
+            curvature = curvatureVal(xs: xs, ys: ys, i: i)
         return abs(offsetX + curvature * offsetY) <= 1.0e-5
     }
     
-    func frictionConstraint(i: Int, param: Matrix) -> Bool {
-        let k = curvatureVal(i: i, param: param),
+    func frictionConstraint(xs: [Double], ys: [Double], i: Int) -> Bool {
+        let k = curvatureVal(xs: xs, ys: ys, i: i),
             mug = 9.8,
             v = sqrt(k / mug)
         return k * v * v - mug <= 1.0e-5
     }
     
     override func test(parameters: Matrix) -> Bool {
+        let (xs,ys) = paramtoxy(parameters: parameters)
         for i in 1..<(parameters.rows-1) {
-            // hopefully the structure is [[x, x, x, ...]
-            //                             [y, y, y, ...]],
-            if (!kmaxConstraint(i: i, param: parameters)) { return false }
-            if (!onTrackConstraint(i: i, param: parameters)) { return false }
-            if (!curvatureCenterConstraint(i: i, param: parameters)) { return false }
-            if (!frictionConstraint(i: i, param: parameters)) { return false }
+            if (!kmaxConstraint(xs: xs, ys: ys, i: i)) { return false }
+            if (!onTrackConstraint(xs: xs, ys: ys, i: i)) { return false }
+            if (!curvatureCenterConstraint(xs: xs, ys: ys, i: i)) { return false }
+            if (!frictionConstraint(xs: xs, ys: ys, i: i)) { return false }
         }
         return true
     }
+}
+
+// helper funcs
+func curvatureVal(xs: [Double], ys: [Double], i: Int) -> Double {
+    let dxb = xs[i]-xs[i-1],
+        dyb = ys[i]-ys[i-1],
+        dsb = sqrt(dxb*dxb + dyb*dyb),
+        dxf = xs[i+1]-xs[i],
+        dyf = ys[i+1]-xs[i],
+        dsf = sqrt(dxf*dxf + dyf*dyf),
+        termOne = (dxb/dsb + dxf/dsf) * (dyf/dsf - dyb/dsb)/(dsf + dsb),
+        termTwo = (dyb/dsb + dyf/dsf) * (dxf/dsf - dxb/dsb)/(dsf + dsb)
+    
+    return termOne-termTwo
+}
+
+func paramtoxy(parameters: Matrix) -> ([Double], [Double]){
+    var xs : [Double] = [], ys : [Double] = []
+    // easier to work with xs and ys than a parameter matrix
+    for i in 0..<parameters.flat.count {
+        if i % 2 == 0 { xs.append(parameters[i]) }
+        else { ys.append(parameters[i]) }
+    }
+    return (xs,ys)
 }
