@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-let SCALE = 2.9
+let SCALE = 5.0
 
 struct drawingView: View {
     

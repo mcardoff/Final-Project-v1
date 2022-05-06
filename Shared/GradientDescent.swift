@@ -49,7 +49,11 @@ class GradientDescent {
 //                print("xg: \(xGrad[i]), yg: \(yGrad[i])")
                 xs[i] -= learningRate * xGrad[i]
                 ys[i] -= learningRate * yGrad[i]
-                // clip values, they cannot go off track!
+                
+//                if(i > 0 && xs[i-1] - xs.last! < 1.0e-4 && ys[i-1] - ys.last! < 1.0e-4) {
+//                    xs[i] = xs.last!
+//                    ys[i] = ys.last!
+//                }
             }
             
             problem.currentXValues = xs

@@ -32,8 +32,12 @@ class timeCostFunction {
     
     func calcPerturbedParam (_ output: inout Double, _ tempxs: [Double], _ tempys: [Double], _ i: Int, _ tempparams: [Double], _ constraint: RacingLineConstraints, _ idx: Int, costWt: Double, kmaxWt: Double, fricWt: Double, ccvWt: Double, dsWt: Double, onTrackWt: Double) {
 //        print("i \(i)")
-        output = costWt * self.costValue(xs: tempxs, ys: tempys, constraint: constraint)
-//        print("Cost: \(output)")
+        let costVal = self.costValue(xs: tempxs, ys: tempys, constraint: constraint)
+        if !costVal.isNaN {
+            output += costWt * costVal
+        } else { print("cost NAN") }
+        print("Cost: \(output)")
+        let debug = true
         // have domain restrictions on i
         if i != tempxs.count-1 && i != tempparams.count-1 && i != 0 && i != tempxs.count && i != tempparams.count {
 //            print("outer if")
@@ -44,21 +48,18 @@ class timeCostFunction {
                 let kmaxv = constraint.kmaxConstraintVal(xs: tempxs, ys: tempys, i: idx) / constraint.KMAX
                 if !kmaxv.isNaN {
                     output += kmaxWt * kmaxv
-                    print("\(i): kmax \(kmaxv)")
                 } else { print("KMAX NAN") }
 
                 // friction
                 let fricv = constraint.frictionConstraintVal(xs: tempxs, ys: tempys, i: idx) / 9.81
                 if !fricv.isNaN {
                     output += fricWt * fricv
-//                    print("fricv \(fricv)")
                 } else { print("fricv NAN") }
 
                 // curvcenter
                 let ccv = constraint.curvatureCenterConstraintVal(xs: tempxs, ys: tempys, i: idx)
                 if !ccv.isNaN {
                     output += ccvWt * ccv
-//                    print("ccv \(ccv)")
                 } else { print("ccv NAN") }
 
                 // ds
@@ -67,15 +68,21 @@ class timeCostFunction {
                     output += dsWt * dsv
 //                    print("dsv \(dsv)")
                 } else { print("dsv NAN") }
+                if(debug) {
+                    print("\(i): kmax \(kmaxv)")
+                    print("fricv \(fricv)")
+                    print("ccv \(ccv)")
+                    print("dsv \(dsv)")
+                }
             }
-
+            print("Final val: \(output)")
         }
 
         // do not have domain restrictions
         let ontrackVal = constraint.onTrackConstraintGood(xs: tempxs, ys: tempys, i: idx)
         if !ontrackVal.isNaN {
             output += onTrackWt * ontrackVal
-//            print("otv: \(ontrackVal)")
+            print("otv: \(ontrackVal)")
         } else {
             print("ontrackVal NAN")
         }

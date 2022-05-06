@@ -11,8 +11,8 @@ import LASwift
 struct ContentView: View {
     
     @State var text : String = ""
-    @State var trackVal : TrackType = .leftHander
-    @State var track : Track = Track(track: .leftHander, KMAX: 0.125, TRACKWIDTH: 1.0)
+    @State var trackVal : TrackType = .oval
+    @State var track : Track = Track(track: .oval, KMAX: 0.125, TRACKWIDTH: 0.5)
     @State var xs : [Double] = []
     @State var ys : [Double] = []
     @State var learningRate : Double = 0.1
@@ -58,7 +58,7 @@ struct ContentView: View {
                         }
                         Slider(
                             value: $learningRate,
-                            in: 0...1, step: 0.01,
+                            in: 0...1,
                             onEditingChanged: { editing in isEditing = editing }
                         ).frame(width: 100.0)
                     }//.padding()
@@ -69,12 +69,9 @@ struct ContentView: View {
                         }
                         Slider(
                             value: $costWt,
-                            in: 0...1, step: 0.01,
+                            in: 0...1,
                             onEditingChanged: { editing in isEditing = editing }
                         ).frame(width: 100.0)
-//                        Text("Time Cost Weight Factor")
-//                        TextField("Time Cost Weight Factor", value: $costWt, formatter: doubleFormatter)
-//                            .frame(width: 100.0)
                     }//.padding()
                     VStack {
                         HStack{
@@ -83,12 +80,9 @@ struct ContentView: View {
                         }
                         Slider(
                             value: $kmaxWt,
-                            in: 0...1, step: 0.01,
+                            in: 0...1,
                             onEditingChanged: { editing in isEditing = editing }
                         ).frame(width: 100.0)
-//                        Text("Max Curvature Weight Factor")
-//                        TextField("Max Curvature Weight Factor", value: $kmaxWt, formatter: doubleFormatter)
-//                            .frame(width: 100.0)
                     }//.padding()
                     VStack {
                         HStack{
@@ -97,12 +91,9 @@ struct ContentView: View {
                         }
                         Slider(
                             value: $fricWt,
-                            in: 0...1, step: 0.01,
+                            in: 0...1,
                             onEditingChanged: { editing in isEditing = editing }
                         ).frame(width: 100.0)
-//                        Text("Max Friction Weight Factor")
-//                        TextField("Max Friction Weight Factor", value: $fricWt, formatter: doubleFormatter)
-//                            .frame(width: 100.0)
                     }//.padding()
                     VStack {
                         HStack{
@@ -111,12 +102,9 @@ struct ContentView: View {
                         }
                         Slider(
                             value: $ccvWt,
-                            in: 0...1, step: 0.01,
+                            in: 0...1,
                             onEditingChanged: { editing in isEditing = editing }
                         ).frame(width: 100.0)
-//                        Text("Center Curvature Weight Factor")
-//                        TextField("Center Curvature Weight Factor", value: $ccvWt, formatter: doubleFormatter)
-//                            .frame(width: 100.0)
                     }//.padding()
                     /*VStack {
                         HStack{
@@ -125,7 +113,7 @@ struct ContentView: View {
                         }
                         Slider(
                             value: $dsWt,
-                            in: 0...1, step: 0.01,
+                            in: 0...1,
                             onEditingChanged: { editing in isEditing = editing }
                         ).frame(width: 100.0)
                     }//.padding()*/
@@ -136,7 +124,7 @@ struct ContentView: View {
                         }
                         Slider(
                             value: $onTrackWt,
-                            in: 0...1, step: 0.01,
+                            in: 0...1,
                             onEditingChanged: { editing in isEditing = editing }
                         ).frame(width: 100.0)
                     }//.padding()*/
@@ -177,7 +165,7 @@ struct ContentView: View {
     }
     
     func calculate() {
-        track = Track(track: trackVal, KMAX: 0.125, TRACKWIDTH: 1.0)
+        track = Track(track: trackVal, KMAX: 0.125, TRACKWIDTH: 0.5)
         
 //        print(track.ycs)
         let endCriteria = EndCriteria(maxIterations: Int(numIter), maxStationaryStateIterations: Int(numIter), rootEpsilon: 1.0e-8, functionEpsilon: 1.0e-9, gradientNormEpsilon: 1.0e-5)
@@ -186,7 +174,7 @@ struct ContentView: View {
         let initialXValue = track.xcs, initialYValue = track.ycs
         var problem = RacingLineProblem(costFunction: costFunc, constraint: constraint, initialXValues: initialXValue, initialYValues: initialYValue)
         let solver = GradientDescent(learningRate, costWt, kmaxWt, fricWt, ccvWt, dsWt, onTrackWt)
-        _ = solver.minimize(problem: &problem, endCriteria: endCriteria)
+        solver.minimize(problem: &problem, endCriteria: endCriteria)
 
         xs = problem.currentXValues
         ys = problem.currentYValues
