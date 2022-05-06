@@ -55,10 +55,10 @@ struct ContentView: View {
         xs = problem.currentXValues
         ys = problem.currentYValues
         
-//        for i in 0..<xs.count {
-//            let tup = (xs[i], ys[i]), tup1 = (initialXValue[i], initialYValue[i])
-//            print("\(i)\nold: \(tup1)\nnew: \(tup)\n\n")
-//        }
+        for i in 0..<xs.count {
+            let tup = (xs[i], ys[i]), tup1 = (initialXValue[i], initialYValue[i])
+            print("\(i)\nold: \(tup1)\nnew: \(tup)\n\n")
+        }
         
 //        for tup in zip(track.xis,track.yis) {
 //            print(tup)

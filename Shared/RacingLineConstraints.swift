@@ -57,7 +57,10 @@ class RacingLineConstraints {
             termOne = (dxb/dsb + dxf/dsf) * (dyf/dsf - dyb/dsb)/(dsf + dsb),
             termTwo = (dyb/dsb + dyf/dsf) * (dxf/dsf - dxb/dsb)/(dsf + dsb)
         
+//        print(dxb, dyb, dsb, dxf, dyf, dsf)
+        
         if (abs(dxb) < 1e-4 && abs(dxf) < 1e-4) || (abs(dyf) < 1e-4 && abs(dyb) < 1e-4) {
+            print("returning default")
             return 0.1
         }
         
@@ -66,8 +69,9 @@ class RacingLineConstraints {
     
     // 0 < i < n
     func kmaxConstraintVal(xs: [Double], ys: [Double], i: Int) -> Double {
-        let kval = curvatureVal(xs: xs, ys: ys, i: i)
-        return -(self.KMAX - kval)
+        let kval = abs(curvatureVal(xs: xs, ys: ys, i: i))
+        print("kval \(kval)")
+        return kval - self.KMAX
     }
     
     // 0 < i < n

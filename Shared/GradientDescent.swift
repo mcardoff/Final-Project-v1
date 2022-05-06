@@ -23,7 +23,7 @@ class GradientDescent {
             yGrad = Array(repeating: 0.0, count: problem.currentYValues.count)
         
         var xs = problem.currentXValues, ys = problem.currentYValues
-        repeat {
+//        repeat {
 //            problem.currentXValues should update according to gradient
             problem.costFunction.gradient(gradx: &xGrad, grady: &yGrad, xs: xs, ys: ys, constraint: problem.constraint)
             // x values change account to xgrad, y values change according to ygrad
@@ -48,8 +48,9 @@ class GradientDescent {
             iterationNumber_ += 1
             if iterationNumber_ > endCriteria.maxIterations {
                 done = true
+//                break
             }
-        } while(!done)
+//        } while(!done)
         return ecType
     }
 }

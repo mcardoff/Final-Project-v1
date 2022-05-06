@@ -36,7 +36,7 @@ struct drawExampleAxes: Shape {
     
     func path(in rect: CGRect) -> Path {
         let center = CGPoint(x: 0.025*rect.width, y: rect.height * (1-0.025)),
-            scale = rect.width/2.3
+            scale = rect.width/2.1
         
         // Create the Path for the display
         var path = Path()
@@ -71,7 +71,7 @@ struct drawPath: Shape {
         if(xs.isEmpty || ys.isEmpty) { return path }
         
         let center = CGPoint(x: 0.025*rect.width, y: rect.height * (1-0.025)),
-            scale = rect.width/2.3,
+            scale = rect.width/2.1,
             newx0 = xs[0]*Double(scale)+Double(center.x),
             newy0 = -ys[0]*Double(scale)+Double(center.y)
         
@@ -94,7 +94,7 @@ struct drawPoints: Shape {
     func path(in rect: CGRect) -> Path {
         // draw from the center of our rectangle
         let center = CGPoint(x: 0.025*rect.width, y: rect.height * (1-0.025)),
-            scale = rect.width/2.3
+            scale = rect.width/2.1
         
         // Create the Path for the display
         var path = Path()
