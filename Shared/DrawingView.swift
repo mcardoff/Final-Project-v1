@@ -19,14 +19,17 @@ struct drawingView: View {
         
         
         ZStack{
-            drawExampleAxes()
-                .stroke(Color.black)
-            drawPoints(xs: trackObj.xcs, ys: trackObj.ycs)
+//            drawExampleAxes()
+//                .stroke(Color.black)
+            // center line
+            drawPath(xs: trackObj.xcs, ys: trackObj.ycs)
                 .stroke(Color.blue)
-            drawPoints(xs: trackObj.xis, ys: trackObj.yis)
+            // inside and outside line
+            drawPath(xs: trackObj.xis, ys: trackObj.yis)
                 .stroke(Color.red)
-            drawPoints(xs: trackObj.xos, ys: trackObj.yos)
+            drawPath(xs: trackObj.xos, ys: trackObj.yos)
                 .stroke(Color.red)
+            // 'optimized' line
             drawPath(xs: xs, ys: ys)
                 .stroke(Color.green)
         }

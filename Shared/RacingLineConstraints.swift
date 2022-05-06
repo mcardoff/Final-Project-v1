@@ -32,19 +32,19 @@ class RacingLineConstraints {
 //        if(i == 154) {
 //            print(dxb, dyb, dsb, dxf, dyf, dsf)
 //        }
-        if (abs(dxb) < 1e-4 && abs(dxf) < 1e-4) || (abs(dyf) < 1e-4 && abs(dyb) < 1e-4) {
-//            print("returning default")
-            return 0.0
-        }
+//        if (abs(dxb) < 1e-4 && abs(dxf) < 1e-4) || (abs(dyf) < 1e-4 && abs(dyb) < 1e-4) {
+////            print("returning default")
+//            return 0.0
+//        }
         
-        return termOne-termTwo
+        return abs(termOne-termTwo)
     }
     
     // 0 < i < n
     func kmaxConstraintVal(xs: [Double], ys: [Double], i: Int) -> Double {
         let kval = abs(curvatureVal(xs: xs, ys: ys, i: i))
-//        print("kval \(kval)")
-        return kval - self.KMAX
+        print("kval \(kval)")
+        return abs(kval - self.KMAX)
     }
     
     // 0 < i < n
@@ -62,7 +62,11 @@ class RacingLineConstraints {
         let dx = xs[i] - xs[i-1],
             dy = ys[i] - ys[i-1],
             ds = dx*dx + dy*dy
-        return ds
+        if ds > 0.01 {
+            return 100000.0
+        } else {
+            return 0
+        }
     }
     
     func onTrackConstraintGood(xs: [Double], ys: [Double], i: Int) -> Double {

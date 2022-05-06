@@ -31,10 +31,9 @@ class timeCostFunction {
     }
     
     func calcPerturbedParam (_ output: inout Double, _ tempxs: [Double], _ tempys: [Double], _ i: Int, _ tempparams: [Double], _ constraint: RacingLineConstraints, _ idx: Int, costWt: Double, kmaxWt: Double, fricWt: Double, ccvWt: Double, dsWt: Double, onTrackWt: Double) {
-        
 //        print("i \(i)")
         output = costWt * self.costValue(xs: tempxs, ys: tempys, constraint: constraint)
-        print("Cost: \(output)")
+//        print("Cost: \(output)")
         // have domain restrictions on i
         if i != tempxs.count-1 && i != tempparams.count-1 && i != 0 && i != tempxs.count && i != tempparams.count {
 //            print("outer if")
@@ -45,7 +44,7 @@ class timeCostFunction {
                 let kmaxv = constraint.kmaxConstraintVal(xs: tempxs, ys: tempys, i: idx) / constraint.KMAX
                 if !kmaxv.isNaN {
                     output += kmaxWt * kmaxv
-//                    print("kmax \(kmaxv)")
+                    print("\(i): kmax \(kmaxv)")
                 } else { print("KMAX NAN") }
 
                 // friction
@@ -90,7 +89,7 @@ class timeCostFunction {
         let copy = tempparams
 //        print("\n\n***New Gradient***\n\n")
 //        for i in 0..<tempparams.count {
-        for i in 0..<tempparams.count-batchnums {
+        for i in 0..<tempparams.count-batchnums+1 {
             let idx: Int
             if 0 <= i && i < xs.count { idx = i } else { idx = i-xs.count }
             for j in 0..<batchnums {
@@ -122,9 +121,9 @@ class timeCostFunction {
             fm = 0.0
             calcPerturbedParam(&fm, tempxs, tempys, i, tempparams, constraint, idx, costWt: costWt, kmaxWt: kmaxWt, fricWt: fricWt, ccvWt: ccvWt, dsWt: dsWt, onTrackWt: onTrackWt)
             
-            print(fp,fm)
+//            print(fp,fm)
             let gradval = 0.5 * (fp + fm) / finiteDiff
-            print(gradval)
+//            print(gradval)
             if 0 <= i && i < xs.count {
                 gradx[idx] = gradval
             } else {

@@ -12,17 +12,17 @@ struct ContentView: View {
     
     @State var text : String = ""
     @State var trackVal : TrackType = .leftHander
-    @State var track : Track = Track(track: .leftHander, KMAX: 0.5, TRACKWIDTH: 1.0)
+    @State var track : Track = Track(track: .leftHander, KMAX: 0.125, TRACKWIDTH: 1.0)
     @State var xs : [Double] = []
     @State var ys : [Double] = []
     @State var learningRate : Double = 0.1
-    @State var onTrackWt : Double = 0.1
-    @State var costWt : Double = 0.1
-    @State var kmaxWt : Double = 0.1
-    @State var fricWt : Double = 0.1
-    @State var ccvWt : Double = 0.1
-    @State var dsWt : Double = 0.1
-    @State var numIter : Int = 1
+    @State var onTrackWt : Double = 0.0
+    @State var costWt : Double = 0.5
+    @State var kmaxWt : Double = 0.0
+    @State var fricWt : Double = 0.25
+    @State var ccvWt : Double = 0.0
+    @State var dsWt : Double = 0.0
+    @State var numIter : Double = 1.0
     
     @State private var isEditing = false
     
@@ -44,13 +44,13 @@ struct ContentView: View {
             HStack{
                 VStack {
                     VStack {
-                        Text("Potential")
+                        Text("Track")
                         Picker("", selection: $trackVal) {
                             ForEach(TrackType.allCases) {
                                 item in Text(item.toString())
                             }
                         }.frame(width: 150.0)
-                    }.padding()
+                    }//.padding()
                     VStack {
                         HStack{
                             Text("Gradient Descent LR: ")
@@ -61,7 +61,7 @@ struct ContentView: View {
                             in: 0...1, step: 0.01,
                             onEditingChanged: { editing in isEditing = editing }
                         ).frame(width: 100.0)
-                    }.padding()
+                    }//.padding()
                     VStack {
                         HStack{
                             Text("Time Cost WF: ")
@@ -75,7 +75,7 @@ struct ContentView: View {
 //                        Text("Time Cost Weight Factor")
 //                        TextField("Time Cost Weight Factor", value: $costWt, formatter: doubleFormatter)
 //                            .frame(width: 100.0)
-                    }.padding()
+                    }//.padding()
                     VStack {
                         HStack{
                             Text("KMax WF: ")
@@ -89,7 +89,7 @@ struct ContentView: View {
 //                        Text("Max Curvature Weight Factor")
 //                        TextField("Max Curvature Weight Factor", value: $kmaxWt, formatter: doubleFormatter)
 //                            .frame(width: 100.0)
-                    }.padding()
+                    }//.padding()
                     VStack {
                         HStack{
                             Text("Max Friction WF: ")
@@ -103,7 +103,7 @@ struct ContentView: View {
 //                        Text("Max Friction Weight Factor")
 //                        TextField("Max Friction Weight Factor", value: $fricWt, formatter: doubleFormatter)
 //                            .frame(width: 100.0)
-                    }.padding()
+                    }//.padding()
                     VStack {
                         HStack{
                             Text("Center Curvature WF: ")
@@ -117,8 +117,8 @@ struct ContentView: View {
 //                        Text("Center Curvature Weight Factor")
 //                        TextField("Center Curvature Weight Factor", value: $ccvWt, formatter: doubleFormatter)
 //                            .frame(width: 100.0)
-                    }.padding()
-                    VStack {
+                    }//.padding()
+                    /*VStack {
                         HStack{
                             Text("ds WF: ")
                             Text(String(format: "%0.2f", dsWt)).foregroundColor(isEditing ? .red : .blue)
@@ -128,11 +128,8 @@ struct ContentView: View {
                             in: 0...1, step: 0.01,
                             onEditingChanged: { editing in isEditing = editing }
                         ).frame(width: 100.0)
-//                        Text("Arc Length Weight Factor")
-//                        TextField("Arc Length Weight Factor", value: $dsWt, formatter: doubleFormatter)
-//                            .frame(width: 100.0)
-                    }.padding()
-                    VStack {
+                    }//.padding()*/
+                    /*VStack {
                         HStack{
                             Text("On Track WF: ")
                             Text(String(format: "%0.2f", onTrackWt)).foregroundColor(isEditing ? .red : .blue)
@@ -142,9 +139,18 @@ struct ContentView: View {
                             in: 0...1, step: 0.01,
                             onEditingChanged: { editing in isEditing = editing }
                         ).frame(width: 100.0)
-//                        Text("Track Limits Weight Factor")
-//                        TextField("Track Limits Weight Factor", value: $onTrackWt, formatter: doubleFormatter)
-//                            .frame(width: 100.0)
+                    }//.padding()*/
+                    VStack {
+                        HStack{
+                            Text("Generations of Gradient Descent: ")
+                            Text(String(format: "%d", Int(numIter))).foregroundColor(isEditing ? .red : .blue)
+                        }
+                        Slider(
+                            value: $numIter,
+                            in: 1...10,
+                            step: 1,
+                            onEditingChanged: { editing in isEditing = editing }
+                        ).frame(width: 100.0)
                     }.padding()
                 }
                 TabView {
@@ -171,10 +177,10 @@ struct ContentView: View {
     }
     
     func calculate() {
-        track = Track(track: trackVal, KMAX: 0.5, TRACKWIDTH: 1.0)
+        track = Track(track: trackVal, KMAX: 0.125, TRACKWIDTH: 1.0)
         
 //        print(track.ycs)
-        let endCriteria = EndCriteria(maxIterations: 1, maxStationaryStateIterations: 100, rootEpsilon: 1.0e-8, functionEpsilon: 1.0e-9, gradientNormEpsilon: 1.0e-5)
+        let endCriteria = EndCriteria(maxIterations: Int(numIter), maxStationaryStateIterations: Int(numIter), rootEpsilon: 1.0e-8, functionEpsilon: 1.0e-9, gradientNormEpsilon: 1.0e-5)
         let costFunc = timeCostFunction()
         let constraint = RacingLineConstraints(track: track)
         let initialXValue = track.xcs, initialYValue = track.ycs
@@ -185,17 +191,17 @@ struct ContentView: View {
         xs = problem.currentXValues
         ys = problem.currentYValues
 
-        for i in 0..<xs.count {
-            let tup = (xs[i], ys[i]), tup1 = (initialXValue[i], initialYValue[i])
+        for i in 0..<xs.count-1 {
+            let dx = xs[i]-xs[i+1], dy = ys[i]-ys[i+1], ds = sqrt(dx*dx+dy*dy)
             text += ("\(i): \n")
-            text += ("x_old: \(tup1.0) x_new: \(tup.0) diff: \(tup.0-tup1.0)\n")
-            text += ("y_old: \(tup1.1) y_new: \(tup.1) diff: \(tup.1-tup1.1)\n")
+            text += ("dx: \(dx) dy: \(dy) ds: \(ds)\n\n")
         }
     }
     
     func clear() {
         xs.removeAll()
         ys.removeAll()
+        text = ""
     }
 }
 

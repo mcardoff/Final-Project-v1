@@ -45,7 +45,7 @@ class GradientDescent {
             problem.currentXValues // should update according to gradient
             problem.costFunction.gradient(gradx: &xGrad, grady: &yGrad, xs: xs, ys: ys, constraint: problem.constraint, costWt: costWt, kmaxWt: kmaxWt, fricWt: fricWt, ccvWt: ccvWt, dsWt: dsWt, onTrackWt: onTrackWt)
             // x values change account to xgrad, y values change according to ygrad
-            for i in 1..<xs.count-1 {
+            for i in 0..<xs.count {
 //                print("xg: \(xGrad[i]), yg: \(yGrad[i])")
                 xs[i] -= learningRate * xGrad[i]
                 ys[i] -= learningRate * yGrad[i]
