@@ -14,6 +14,7 @@ class Track {
     var KMAX : Double, TRACKWIDTH : Double
     var xcs : [Double], ycs : [Double]
     var xis : [Double], yis : [Double]
+    var xos : [Double], yos : [Double]
     let GRAVITY = 9.8, FRICTION = 1.0
 //    var curvatureVals
     
@@ -26,13 +27,17 @@ class Track {
             thetavals.append(Double(i) * 2.0 * Double.pi / (4.0 * Double(n)))
         }
         
-        xcs = []; ycs = []; xis = []; yis = []
+        xcs = []; ycs = []
+        xis = []; yis = []
+        xos = []; yos = []
         let rad = 1.0
         for i in 0..<50 {
             xcs.append(1+rad)
             xis.append(1+rad-TRACKWIDTH/2)
+            xos.append(1+rad+TRACKWIDTH/2)
             ycs.append((Double(i) / 50.0))
             yis.append((Double(i) / 50.0))
+            yos.append((Double(i) / 50.0))
         }
         
         for theta in thetavals {
@@ -40,13 +45,18 @@ class Track {
             ycs.append(1+rad*sin(theta))
             xis.append(1+(rad-TRACKWIDTH/2)*cos(theta))
             yis.append(1+(rad-TRACKWIDTH/2)*sin(theta))
+            xos.append(1+(rad+TRACKWIDTH/2)*cos(theta))
+            yos.append(1+(rad+TRACKWIDTH/2)*sin(theta))
         }
         
         for i in 1...50 {
             xcs.append(1+rad*cos(thetavals.last!) - (Double(i) / 50.0))
             xis.append(1+rad*cos(thetavals.last!) - (Double(i) / 50.0))
+            xos.append(1+rad*cos(thetavals.last!) - (Double(i) / 50.0))
             ycs.append(1+rad*sin(thetavals.last!))
             yis.append(1+(rad-(TRACKWIDTH/2))*sin(thetavals.last!))
+            yos.append(1+(rad+(TRACKWIDTH/2))*sin(thetavals.last!))
+            
         }
         
 //        xcs = thetavals.map {(theta: Double) -> Double in return 1+rad*cos(theta)}
@@ -64,6 +74,8 @@ class Track {
         name = nameStr
         yis = []
         xis = []
+        yos = []
+        xos = []
     }
     
     func calculateDeltaNorm(i: Int, xs: [Double], ys: [Double], dt: Double) -> (Double, Double) {
