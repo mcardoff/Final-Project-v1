@@ -13,6 +13,7 @@ class Track {
     var name : String = ""
     var KMAX : Double, TRACKWIDTH : Double
     var xcs : [Double], ycs : [Double]
+    var xis : [Double], yis : [Double]
     let GRAVITY = 9.8, FRICTION = 1.0
 //    var curvatureVals
     
@@ -21,11 +22,35 @@ class Track {
         KMAX = 0.5
         TRACKWIDTH = 1.50
         var thetavals : [Double] = [], n = 150
-        for i in 0..<n { thetavals.append(Double(i) * Double.pi / (2.0 * Double(n))) }
+        for i in 0..<n {
+            thetavals.append(Double(i) * 2.0 * Double.pi / (4.0 * Double(n)))
+        }
         
-        let rad = 1.1
-        xcs = thetavals.map {(theta: Double) -> Double in return rad*cos(theta)}
-        ycs = thetavals.map {(theta: Double) -> Double in return rad*sin(theta)}
+        xcs = []; ycs = []; xis = []; yis = []
+        let rad = 1.0
+        for i in 45..<50 {
+            xcs.append(1+rad)
+            xis.append(1+rad-TRACKWIDTH/2)
+            ycs.append((Double(i) / 50.0))
+            yis.append((Double(i) / 50.0))
+        }
+        
+        for theta in thetavals {
+            xcs.append(1+rad*cos(theta))
+            ycs.append(1+rad*sin(theta))
+            xis.append(1+(rad-TRACKWIDTH/2)*cos(theta))
+            yis.append(1+(rad-TRACKWIDTH/2)*sin(theta))
+        }
+        
+//        for i in 0..<50 {
+//            xcs.append(1+rad*cos(thetavals.last!))
+//            xis.append(1+(rad-(TRACKWIDTH/2))*cos(thetavals.last!))
+//            ycs.append(1+rad*sin(thetavals.last!) - (Double(i) / 50.0))
+//            yis.append(1+rad*sin(thetavals.last!) - (Double(i) / 50.0))
+//        }
+        
+//        xcs = thetavals.map {(theta: Double) -> Double in return 1+rad*cos(theta)}
+//        ycs = thetavals.map {(theta: Double) -> Double in return 1+rad*sin(theta)}
         
         name = "Test"
     }
@@ -37,6 +62,8 @@ class Track {
         xcs = centerLineX
         ycs = centerLineY
         name = nameStr
+        yis = []
+        xis = []
     }
     
     func calculateDeltaNorm(i: Int, xs: [Double], ys: [Double], dt: Double) -> (Double, Double) {
