@@ -92,7 +92,7 @@ class RacingLineConstraints {
         let offsetX = xs[i] - self.xcs[i],
             offsetY = ys[i] - self.ycs[i],
             dist = offsetX*offsetX + offsetY*offsetY
-        if(dist <= 0.25 * self.TRACKWIDTH*self.TRACKWIDTH) {
+        if(dist <= 0.5 * self.TRACKWIDTH*self.TRACKWIDTH) {
             return 0 // should be no contribution
         } else {
             return sqrt(dist)

@@ -28,12 +28,12 @@ class Track {
         
         xcs = []; ycs = []; xis = []; yis = []
         let rad = 1.0
-        for i in 45..<50 {
-            xcs.append(1+rad)
-            xis.append(1+rad-TRACKWIDTH/2)
-            ycs.append((Double(i) / 50.0))
-            yis.append((Double(i) / 50.0))
-        }
+//        for i in 45..<50 {
+//            xcs.append(1+rad)
+//            xis.append(1+rad-TRACKWIDTH/2)
+//            ycs.append((Double(i) / 50.0))
+//            yis.append((Double(i) / 50.0))
+//        }
         
         for theta in thetavals {
             xcs.append(1+rad*cos(theta))

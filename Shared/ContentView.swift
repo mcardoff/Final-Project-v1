@@ -44,7 +44,7 @@ struct ContentView: View {
         var constraint = RacingLineConstraints()
         var initialXValue = track.xcs, initialYValue = track.ycs
         var problem = RacingLineProblem(costFunction: costFunc, constraint: constraint, initialXValues: initialXValue, initialYValues: initialYValue)
-        var solver = GradientDescent(0.01)
+        var solver = GradientDescent(1.0)
         var solved = solver.minimize(problem: &problem, endCriteria: endCriteria)
 //        print(problem.currentXValues)
 //        print(problem.currentXValues)
@@ -55,10 +55,10 @@ struct ContentView: View {
         xs = problem.currentXValues
         ys = problem.currentYValues
         
-        for i in 0..<xs.count {
-            let tup = (xs[i], ys[i]), tup1 = (initialXValue[i], initialYValue[i])
-            print("\(i)\nold: \(tup1)\nnew: \(tup)\n\n")
-        }
+//        for i in 0..<xs.count {
+//            let tup = (xs[i], ys[i]), tup1 = (initialXValue[i], initialYValue[i])
+//            print("\(i)\nold: \(tup1)\nnew: \(tup)\n\n")
+//        }
         
 //        for tup in zip(track.xis,track.yis) {
 //            print(tup)

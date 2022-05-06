@@ -10,7 +10,7 @@ import LASwift
 
 class timeCostFunction {
 //    var N: Int = 150 // this many steps around the circuit
-    let finiteDiff = 1.0e-5
+    let finiteDiff = 1.0e-2
     
     func costValue(xs: [Double], ys: [Double], constraint: RacingLineConstraints) -> Double {
         var costVal = 0.0
@@ -26,52 +26,53 @@ class timeCostFunction {
     }
     
     func calcPerturbedParam (_ output: inout Double, _ tempxs: [Double], _ tempys: [Double], _ i: Int, _ tempparams: [Double], _ constraint: RacingLineConstraints, _ idx: Int) {
-//        output = self.costValue(xs: tempxs, ys: tempys, constraint: constraint) * 0.001
-//        print("Cost \(output)")
+        output = self.costValue(xs: tempxs, ys: tempys, constraint: constraint) * 0.001
+        print("Cost \(output)")
         // have domain restrictions on i
-        if i != tempxs.count-1 && i != tempparams.count-1 && i != 0 && i != tempxs.count && i != tempparams.count {
-            if ((abs(tempxs[idx] - tempxs[idx-1]) < 1e-4) && (abs(tempxs[idx+1] - tempxs[idx]) < 1e-4)) ||
-               ((abs(tempys[idx] - tempys[idx-1]) < 1e-4) && (abs(tempys[idx+1] - tempys[idx]) > 1e-4)) {
-                
-                // kmax
+//        if i != tempxs.count-1 && i != tempparams.count-1 && i != 0 && i != tempxs.count && i != tempparams.count {
+//            print("outer if")
+//            if ((abs(tempxs[idx] - tempxs[idx-1]) > 1e-4) && (abs(tempxs[idx+1] - tempxs[idx]) > 1e-4)) ||
+//               ((abs(tempys[idx] - tempys[idx-1]) > 1e-4) && (abs(tempys[idx+1] - tempys[idx]) > 1e-4)) {
+//                print("inner if")
+//                // kmax
 //                let kmaxv = constraint.kmaxConstraintVal(xs: tempxs, ys: tempys, i: idx)
 //                if !kmaxv.isNaN {
-//                    output += 0.01 * kmaxv
+//                    output += -0.000000001 * kmaxv
 //                    print("kmax \(kmaxv)")
 //                } else { print("KMAX NAN") }
-                
-                // friction
+//
+//                // friction
 //                let fricv = constraint.frictionConstraintVal(xs: tempxs, ys: tempys, i: idx)
 //                if !fricv.isNaN {
 //                    output += 0.01 * fricv
 //                    print("fricv \(fricv)")
 //                } else { print("fricv NAN") }
-                
-                // curvcenter
+//
+//                // curvcenter
 //                let ccv = constraint.curvatureCenterConstraintVal(xs: tempxs, ys: tempys, i: idx)
 //                if !ccv.isNaN {
 //                    output += 0.01 * ccv
 //                    print("ccv \(ccv)")
 //                } else { print("ccv NAN") }
-                
-                // ds
+//                
+//                // ds
 //                let dsv = constraint.dsConstraintVal(xs: tempxs, ys: tempys, i: idx)
 //                if !dsv.isNaN {
 //                    output += 0.1 * dsv
 //                    print("dsv \(dsv)")
 //                } else { print("dsv NAN") }
-            }
-
-        }
+//            }
+//
+//        }
 
         // do not have domain restrictions
-        let ontrackVal = constraint.onTrackConstraintGood(xs: tempxs, ys: tempys, i: idx)
-        if !ontrackVal.isNaN {
-            output += 0.01 * ontrackVal
-            print("otv: \(ontrackVal)")
-        } else {
-            print("ontrackVal NAN")
-        }
+//        let ontrackVal = constraint.onTrackConstraintGood(xs: tempxs, ys: tempys, i: idx)
+//        if !ontrackVal.isNaN {
+//            output += 0.01 * ontrackVal
+////            print("otv: \(ontrackVal)")
+//        } else {
+//            print("ontrackVal NAN")
+//        }
     }
     
     func gradient(gradx: inout [Double], grady: inout [Double], xs: [Double], ys: [Double], constraint: RacingLineConstraints) {
