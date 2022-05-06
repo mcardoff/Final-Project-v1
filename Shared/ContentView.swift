@@ -11,10 +11,11 @@ import LASwift
 struct ContentView: View {
     
     @State var text : String = ""
-    @State var optimizationObj = OptimizationOfPath()
+    @State var trackVal : TrackType = .leftHander
+    @State var track : Track = Track(track: .leftHander, KMAX: 0.5, TRACKWIDTH: 1.0)
     @State var xs : [Double] = []
     @State var ys : [Double] = []
-    @State var learningRate : Double = 10.0
+    @State var learningRate : Double = 0.1
     @State var onTrackWt : Double = 0.1
     @State var costWt : Double = 0.1
     @State var kmaxWt : Double = 0.1
@@ -22,6 +23,8 @@ struct ContentView: View {
     @State var ccvWt : Double = 0.1
     @State var dsWt : Double = 0.1
     @State var numIter : Int = 1
+    
+    @State private var isEditing = false
     
     private var intFormatter: NumberFormatter = {
         let f = NumberFormatter()
@@ -41,43 +44,111 @@ struct ContentView: View {
             HStack{
                 VStack {
                     VStack {
-                        Text("Gradient Descent Learning Rate")
-                        TextField("Gradient Descent Learning Rate", value: $learningRate, formatter: doubleFormatter)
-                            .frame(width: 100.0)
+                        Text("Potential")
+                        Picker("", selection: $trackVal) {
+                            ForEach(TrackType.allCases) {
+                                item in Text(item.toString())
+                            }
+                        }.frame(width: 150.0)
                     }.padding()
                     VStack {
-                        Text("Time Cost Weight Factor")
-                        TextField("Time Cost Weight Factor", value: $costWt, formatter: doubleFormatter)
-                            .frame(width: 100.0)
+                        HStack{
+                            Text("Gradient Descent LR: ")
+                            Text(String(format: "%0.2f", learningRate)).foregroundColor(isEditing ? .red : .blue)
+                        }
+                        Slider(
+                            value: $learningRate,
+                            in: 0...1, step: 0.01,
+                            onEditingChanged: { editing in isEditing = editing }
+                        ).frame(width: 100.0)
                     }.padding()
                     VStack {
-                        Text("Max Curvature Weight Factor")
-                        TextField("Max Curvature Weight Factor", value: $kmaxWt, formatter: doubleFormatter)
-                            .frame(width: 100.0)
+                        HStack{
+                            Text("Time Cost WF: ")
+                            Text(String(format: "%0.2f", costWt)).foregroundColor(isEditing ? .red : .blue)
+                        }
+                        Slider(
+                            value: $costWt,
+                            in: 0...1, step: 0.01,
+                            onEditingChanged: { editing in isEditing = editing }
+                        ).frame(width: 100.0)
+//                        Text("Time Cost Weight Factor")
+//                        TextField("Time Cost Weight Factor", value: $costWt, formatter: doubleFormatter)
+//                            .frame(width: 100.0)
                     }.padding()
                     VStack {
-                        Text("Max Friction Weight Factor")
-                        TextField("Max Friction Weight Factor", value: $fricWt, formatter: doubleFormatter)
-                            .frame(width: 100.0)
+                        HStack{
+                            Text("KMax WF: ")
+                            Text(String(format: "%0.2f", kmaxWt)).foregroundColor(isEditing ? .red : .blue)
+                        }
+                        Slider(
+                            value: $kmaxWt,
+                            in: 0...1, step: 0.01,
+                            onEditingChanged: { editing in isEditing = editing }
+                        ).frame(width: 100.0)
+//                        Text("Max Curvature Weight Factor")
+//                        TextField("Max Curvature Weight Factor", value: $kmaxWt, formatter: doubleFormatter)
+//                            .frame(width: 100.0)
                     }.padding()
                     VStack {
-                        Text("Center Curvature Weight Factor")
-                        TextField("Center Curvature Weight Factor", value: $ccvWt, formatter: doubleFormatter)
-                            .frame(width: 100.0)
+                        HStack{
+                            Text("Max Friction WF: ")
+                            Text(String(format: "%0.2f", fricWt)).foregroundColor(isEditing ? .red : .blue)
+                        }
+                        Slider(
+                            value: $fricWt,
+                            in: 0...1, step: 0.01,
+                            onEditingChanged: { editing in isEditing = editing }
+                        ).frame(width: 100.0)
+//                        Text("Max Friction Weight Factor")
+//                        TextField("Max Friction Weight Factor", value: $fricWt, formatter: doubleFormatter)
+//                            .frame(width: 100.0)
                     }.padding()
                     VStack {
-                        Text("Arc Length Weight Factor")
-                        TextField("Arc Length Weight Factor", value: $dsWt, formatter: doubleFormatter)
-                            .frame(width: 100.0)
+                        HStack{
+                            Text("Center Curvature WF: ")
+                            Text(String(format: "%0.2f", ccvWt)).foregroundColor(isEditing ? .red : .blue)
+                        }
+                        Slider(
+                            value: $ccvWt,
+                            in: 0...1, step: 0.01,
+                            onEditingChanged: { editing in isEditing = editing }
+                        ).frame(width: 100.0)
+//                        Text("Center Curvature Weight Factor")
+//                        TextField("Center Curvature Weight Factor", value: $ccvWt, formatter: doubleFormatter)
+//                            .frame(width: 100.0)
                     }.padding()
                     VStack {
-                        Text("Track Limits Weight Factor")
-                        TextField("Track Limits Weight Factor", value: $onTrackWt, formatter: doubleFormatter)
-                            .frame(width: 100.0)
+                        HStack{
+                            Text("ds WF: ")
+                            Text(String(format: "%0.2f", dsWt)).foregroundColor(isEditing ? .red : .blue)
+                        }
+                        Slider(
+                            value: $dsWt,
+                            in: 0...1, step: 0.01,
+                            onEditingChanged: { editing in isEditing = editing }
+                        ).frame(width: 100.0)
+//                        Text("Arc Length Weight Factor")
+//                        TextField("Arc Length Weight Factor", value: $dsWt, formatter: doubleFormatter)
+//                            .frame(width: 100.0)
+                    }.padding()
+                    VStack {
+                        HStack{
+                            Text("On Track WF: ")
+                            Text(String(format: "%0.2f", onTrackWt)).foregroundColor(isEditing ? .red : .blue)
+                        }
+                        Slider(
+                            value: $onTrackWt,
+                            in: 0...1, step: 0.01,
+                            onEditingChanged: { editing in isEditing = editing }
+                        ).frame(width: 100.0)
+//                        Text("Track Limits Weight Factor")
+//                        TextField("Track Limits Weight Factor", value: $onTrackWt, formatter: doubleFormatter)
+//                            .frame(width: 100.0)
                     }.padding()
                 }
                 TabView {
-                    drawingView(xs: $xs, ys: $ys, optObj: $optimizationObj)
+                    drawingView(xs: $xs, ys: $ys, trackObj: $track)
                         .padding()
                         .aspectRatio(1, contentMode: .fit)
                         .drawingGroup()
@@ -86,33 +157,45 @@ struct ContentView: View {
                         }
                     TextEditor(text: $text)
                         .tabItem {
-                            Text("Curvature Vals")
+                            Text("Change in Path")
                         }
                 }
             }
-            Button("Calculate Stuff", action: self.calculate)
+            HStack {
+            Button("Calculate GD", action: self.calculate)
                 .padding()
+            Button("Clear RL", action: self.clear)
+                .padding()
+            }
         }
     }
     
     func calculate() {
-        let track = Track()
+        track = Track(track: trackVal, KMAX: 0.5, TRACKWIDTH: 1.0)
         
-        let endCriteria = EndCriteria(maxIterations: 1, maxStationaryStateIterations: 10, rootEpsilon: 1.0e-8, functionEpsilon: 1.0e-9, gradientNormEpsilon: 1.0e-5)
+//        print(track.ycs)
+        let endCriteria = EndCriteria(maxIterations: 1, maxStationaryStateIterations: 100, rootEpsilon: 1.0e-8, functionEpsilon: 1.0e-9, gradientNormEpsilon: 1.0e-5)
         let costFunc = timeCostFunction()
-        let constraint = RacingLineConstraints()
+        let constraint = RacingLineConstraints(track: track)
         let initialXValue = track.xcs, initialYValue = track.ycs
         var problem = RacingLineProblem(costFunction: costFunc, constraint: constraint, initialXValues: initialXValue, initialYValues: initialYValue)
         let solver = GradientDescent(learningRate, costWt, kmaxWt, fricWt, ccvWt, dsWt, onTrackWt)
         _ = solver.minimize(problem: &problem, endCriteria: endCriteria)
-        
+
         xs = problem.currentXValues
         ys = problem.currentYValues
-        
+
         for i in 0..<xs.count {
             let tup = (xs[i], ys[i]), tup1 = (initialXValue[i], initialYValue[i])
-            print("\(i)\nold: \(tup1)\nnew: \(tup)\n\n")
+            text += ("\(i): \n")
+            text += ("x_old: \(tup1.0) x_new: \(tup.0) diff: \(tup.0-tup1.0)\n")
+            text += ("y_old: \(tup1.1) y_new: \(tup.1) diff: \(tup.1-tup1.1)\n")
         }
+    }
+    
+    func clear() {
+        xs.removeAll()
+        ys.removeAll()
     }
 }
 

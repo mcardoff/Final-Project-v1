@@ -13,7 +13,7 @@ struct drawingView: View {
     
     @Binding var xs : [Double]
     @Binding var ys : [Double]
-    @Binding var optObj : OptimizationOfPath
+    @Binding var trackObj : Track
     
     var body: some View {
         
@@ -21,11 +21,11 @@ struct drawingView: View {
         ZStack{
             drawExampleAxes()
                 .stroke(Color.black)
-            drawPoints(xs: optObj.track.xcs, ys: optObj.track.ycs)
+            drawPoints(xs: trackObj.xcs, ys: trackObj.ycs)
                 .stroke(Color.blue)
-            drawPoints(xs: optObj.track.xis, ys: optObj.track.yis)
+            drawPoints(xs: trackObj.xis, ys: trackObj.yis)
                 .stroke(Color.red)
-            drawPoints(xs: optObj.track.xos, ys: optObj.track.yos)
+            drawPoints(xs: trackObj.xos, ys: trackObj.yos)
                 .stroke(Color.red)
             drawPath(xs: xs, ys: ys)
                 .stroke(Color.green)

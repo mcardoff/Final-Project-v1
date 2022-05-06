@@ -10,17 +10,21 @@ import LASwift
 
 class timeCostFunction {
 //    var N: Int = 150 // this many steps around the circuit
-    let finiteDiff = 1.0e-9
+    let finiteDiff = 2.0
     
     func costValue(xs: [Double], ys: [Double], constraint: RacingLineConstraints) -> Double {
         var costVal = 0.0
         for i in 1..<xs.count-2 {
             let k = constraint.curvatureVal(xs: xs, ys: ys, i: i),
-                dx = xs[i]-xs[i-1],
-                dy = ys[i]-ys[i-1],
-                ds = sqrt(dx*dx+dy*dy)
-            print("in cost \(i): \(k),\(dx),\(dy),\(ds)")
-            print("Adding: \(sqrt(abs(k))*ds)")
+                dxb = xs[i]-xs[i-1],
+                dyb = ys[i]-ys[i-1],
+                dsb = sqrt(dxb*dxb+dyb*dyb),
+                dxf = xs[i+1]-xs[i],
+                dyf = ys[i+1]-ys[i],
+                dsf = sqrt(dxf*dxf+dyf*dyf),
+                ds = 0.5 * (dsf + dsb)
+//            print("in cost \(i): \(k),\(dx),\(dy),\(ds)")
+//            print("Adding: \(sqrt(abs(k))*ds)")
             costVal += sqrt(abs(k))*ds
         }
         return costVal
@@ -28,8 +32,8 @@ class timeCostFunction {
     
     func calcPerturbedParam (_ output: inout Double, _ tempxs: [Double], _ tempys: [Double], _ i: Int, _ tempparams: [Double], _ constraint: RacingLineConstraints, _ idx: Int, costWt: Double, kmaxWt: Double, fricWt: Double, ccvWt: Double, dsWt: Double, onTrackWt: Double) {
         
-        print("i \(i)")
-        output = self.costValue(xs: tempxs, ys: tempys, constraint: constraint) * 0.01
+//        print("i \(i)")
+        output = costWt * self.costValue(xs: tempxs, ys: tempys, constraint: constraint)
         print("Cost: \(output)")
         // have domain restrictions on i
         if i != tempxs.count-1 && i != tempparams.count-1 && i != 0 && i != tempxs.count && i != tempparams.count {
@@ -40,29 +44,29 @@ class timeCostFunction {
                 // kmax
                 let kmaxv = constraint.kmaxConstraintVal(xs: tempxs, ys: tempys, i: idx) / constraint.KMAX
                 if !kmaxv.isNaN {
-                    output += 0.01 * kmaxv
-                    print("kmax \(kmaxv)")
+                    output += kmaxWt * kmaxv
+//                    print("kmax \(kmaxv)")
                 } else { print("KMAX NAN") }
 
                 // friction
                 let fricv = constraint.frictionConstraintVal(xs: tempxs, ys: tempys, i: idx) / 9.81
                 if !fricv.isNaN {
-                    output += 0.001 * fricv
-                    print("fricv \(fricv)")
+                    output += fricWt * fricv
+//                    print("fricv \(fricv)")
                 } else { print("fricv NAN") }
 
                 // curvcenter
                 let ccv = constraint.curvatureCenterConstraintVal(xs: tempxs, ys: tempys, i: idx)
                 if !ccv.isNaN {
-                    output += 0.01 * ccv
-                    print("ccv \(ccv)")
+                    output += ccvWt * ccv
+//                    print("ccv \(ccv)")
                 } else { print("ccv NAN") }
-                
+
                 // ds
                 let dsv = constraint.dsConstraintVal(xs: tempxs, ys: tempys, i: idx)
                 if !dsv.isNaN {
-                    output += 0.01 * dsv
-                    print("dsv \(dsv)")
+                    output += dsWt * dsv
+//                    print("dsv \(dsv)")
                 } else { print("dsv NAN") }
             }
 
@@ -71,7 +75,7 @@ class timeCostFunction {
         // do not have domain restrictions
         let ontrackVal = constraint.onTrackConstraintGood(xs: tempxs, ys: tempys, i: idx)
         if !ontrackVal.isNaN {
-            output += 0.01 * ontrackVal
+            output += onTrackWt * ontrackVal
 //            print("otv: \(ontrackVal)")
         } else {
             print("ontrackVal NAN")
@@ -79,12 +83,12 @@ class timeCostFunction {
     }
     
     func gradient(gradx: inout [Double], grady: inout [Double], xs: [Double], ys: [Double], constraint: RacingLineConstraints, costWt: Double, kmaxWt: Double, fricWt: Double, ccvWt: Double, dsWt: Double, onTrackWt: Double) {
-        let batchnums = 3 // perturb this number at a time
+        let batchnums = 5 // perturb this number at a time
         var fp : Double, fm : Double
         var tempparams = xs, tempxs = xs, tempys = ys
         tempparams.append(contentsOf: ys)
         let copy = tempparams
-        print("\n\n***New Gradient***\n\n")
+//        print("\n\n***New Gradient***\n\n")
 //        for i in 0..<tempparams.count {
         for i in 0..<tempparams.count-batchnums {
             let idx: Int
@@ -92,7 +96,7 @@ class timeCostFunction {
             for j in 0..<batchnums {
                 // boundary terms do not work, on boundary or perturbing xs and ys
                 if (tempxs.count - batchnums < idx + j && idx + j < tempxs.count) {
-                    print(j)
+//                    print(j)
                     tempparams[i+j] += finiteDiff
                     if 0 <= idx+j && idx+j < xs.count { tempxs[idx+j] += finiteDiff /* perturb only x */ }
                     else { tempys[idx+j] += finiteDiff }
@@ -118,8 +122,9 @@ class timeCostFunction {
             fm = 0.0
             calcPerturbedParam(&fm, tempxs, tempys, i, tempparams, constraint, idx, costWt: costWt, kmaxWt: kmaxWt, fricWt: fricWt, ccvWt: ccvWt, dsWt: dsWt, onTrackWt: onTrackWt)
             
-            let gradval = 0.5 * (fp - fm) / finiteDiff
-            
+            print(fp,fm)
+            let gradval = 0.5 * (fp + fm) / finiteDiff
+            print(gradval)
             if 0 <= i && i < xs.count {
                 gradx[idx] = gradval
             } else {
@@ -130,12 +135,5 @@ class timeCostFunction {
             tempxs = xs
             tempys = ys
         }
-        
     }
-    
-//    func valueAndGradient(gradx: inout [Double], grady: inout [Double], xs: [Double], ys: [Double], constraint: RacingLineConstraints) -> Double {
-//        self.gradient(gradx: &gradx, grady: &grady, xs: xs, ys: ys, constraint: constraint)
-//        return costValue(xs: xs, ys: ys, constraint: constraint)
-//    }
-    
 }

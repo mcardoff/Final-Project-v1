@@ -9,42 +9,12 @@ import Foundation
 
 class RacingLineConstraints {
     
-    var xcs : [Double], ycs : [Double]
-    var xis : [Double], yis : [Double]
+    var track: Track
     let KMAX = 0.5,
         TRACKWIDTH = 1.50
     
-    init() {
-        var thetavals : [Double] = [], n = 150
-        for i in 0..<n {
-            thetavals.append(Double(i) * 2.0 * Double.pi / (2.0 * Double(n)))
-        }
-        
-        xcs = []; ycs = []; xis = []; yis = []
-        let rad = 1.0
-        for i in 0..<50 {
-            xcs.append(1+rad)
-            xis.append(1+rad-TRACKWIDTH/2)
-            ycs.append((Double(i) / 50.0))
-            yis.append((Double(i) / 50.0))
-        }
-        
-        for theta in thetavals {
-            xcs.append(1+rad*cos(theta))
-            ycs.append(1+rad*sin(theta))
-            xis.append(1+(rad-TRACKWIDTH/2)*cos(theta))
-            yis.append(1+(rad-TRACKWIDTH/2)*sin(theta))
-        }
-        
-        for i in 0..<50 {
-            xcs.append(1+rad*cos(thetavals.last!))
-            xis.append(1+(rad-(TRACKWIDTH/2))*cos(thetavals.last!))
-            ycs.append(1+rad*sin(thetavals.last!) - (Double(i) / 50.0))
-            yis.append(1+rad*sin(thetavals.last!) - (Double(i) / 50.0))
-        }
-        
-//        xcs = thetavals.map {(theta: Double) -> Double in return 1+rad*cos(theta)}
-//        ycs = thetavals.map {(theta: Double) -> Double in return 1+rad*sin(theta)}
+    init(track: Track) {
+        self.track = track
     }
     
     func curvatureVal(xs: [Double], ys: [Double], i: Int) -> Double {
@@ -59,11 +29,11 @@ class RacingLineConstraints {
         
 //        print(dxb, dyb, dsb, dxf, dyf, dsf)
 //        print(i)
-        if(i == 154) {
-            print(dxb, dyb, dsb, dxf, dyf, dsf)
-        }
+//        if(i == 154) {
+//            print(dxb, dyb, dsb, dxf, dyf, dsf)
+//        }
         if (abs(dxb) < 1e-4 && abs(dxf) < 1e-4) || (abs(dyf) < 1e-4 && abs(dyb) < 1e-4) {
-            print("returning default")
+//            print("returning default")
             return 0.0
         }
         
@@ -73,7 +43,7 @@ class RacingLineConstraints {
     // 0 < i < n
     func kmaxConstraintVal(xs: [Double], ys: [Double], i: Int) -> Double {
         let kval = abs(curvatureVal(xs: xs, ys: ys, i: i))
-        print("kval \(kval)")
+//        print("kval \(kval)")
         return kval - self.KMAX
     }
     
@@ -96,8 +66,8 @@ class RacingLineConstraints {
     }
     
     func onTrackConstraintGood(xs: [Double], ys: [Double], i: Int) -> Double {
-        let offsetX = xs[i] - self.xcs[i],
-            offsetY = ys[i] - self.ycs[i],
+        let offsetX = xs[i] - self.track.xcs[i],
+            offsetY = ys[i] - self.track.ycs[i],
             dist = offsetX*offsetX + offsetY*offsetY
         if(dist <= 0.5 * self.TRACKWIDTH*self.TRACKWIDTH) {
             return 0 // should be no contribution
@@ -108,8 +78,8 @@ class RacingLineConstraints {
     
     // no constraint on i
     func onTrackConstraintVal(xs: [Double], ys: [Double], i: Int) -> Double {
-        let offsetX = xs[i] - self.xcs[i],
-            offsetY = ys[i] - self.ycs[i],
+        let offsetX = xs[i] - self.track.xcs[i],
+            offsetY = ys[i] - self.track.ycs[i],
             dist = offsetX*offsetX + offsetY*offsetY
         print("x: \(offsetX), y:\(offsetY)")
         return (0.25 * self.TRACKWIDTH * self.TRACKWIDTH) - dist
@@ -117,8 +87,8 @@ class RacingLineConstraints {
     
     // no constraint on i
     func curvatureCenterConstraintVal(xs: [Double], ys: [Double], i: Int) -> Double {
-        let offsetX = xs[i] - self.xcs[i],
-            offsetY = ys[i] - self.ycs[i],
+        let offsetX = xs[i] - self.track.xcs[i],
+            offsetY = ys[i] - self.track.ycs[i],
             curvature = curvatureVal(xs: xs, ys: ys, i: i)
         return abs(offsetX + curvature * offsetY)
     }
