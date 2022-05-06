@@ -39,16 +39,16 @@ class RacingLineProblem {
         return costFunction.costValue(xs: xs, ys: ys, constraint: constraint)
     }
     
-    func gradient(gradx : inout [Double], grady : inout [Double], xs: [Double], ys: [Double]) {
-        gradientEvaluation += 1
-        costFunction.gradient(gradx: &gradx, grady: &grady, xs: xs, ys: ys, constraint: constraint)
-    }
-    
-    func valueAndGradient(gradx : inout [Double], grady : inout [Double], xs: [Double], ys: [Double]) -> Double {
-        functionEvaluation += 1
-        gradientEvaluation += 1
-        return costFunction.valueAndGradient(gradx: &gradx, grady: &grady, xs: xs, ys: ys, constraint: constraint)
-    }
+//    func gradient(gradx : inout [Double], grady : inout [Double], xs: [Double], ys: [Double]) {
+//        gradientEvaluation += 1
+//        costFunction.gradient(gradx: &gradx, grady: &grady, xs: xs, ys: ys, constraint: constraint)
+//    }
+//    
+//    func valueAndGradient(gradx : inout [Double], grady : inout [Double], xs: [Double], ys: [Double]) -> Double {
+//        functionEvaluation += 1
+//        gradientEvaluation += 1
+//        return costFunction.valueAndGradient(gradx: &gradx, grady: &grady, xs: xs, ys: ys, constraint: constraint)
+//    }
 }
 
 

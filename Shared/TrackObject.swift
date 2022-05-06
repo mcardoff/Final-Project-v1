@@ -28,12 +28,12 @@ class Track {
         
         xcs = []; ycs = []; xis = []; yis = []
         let rad = 1.0
-//        for i in 45..<50 {
-//            xcs.append(1+rad)
-//            xis.append(1+rad-TRACKWIDTH/2)
-//            ycs.append((Double(i) / 50.0))
-//            yis.append((Double(i) / 50.0))
-//        }
+        for i in 0..<50 {
+            xcs.append(1+rad)
+            xis.append(1+rad-TRACKWIDTH/2)
+            ycs.append((Double(i) / 50.0))
+            yis.append((Double(i) / 50.0))
+        }
         
         for theta in thetavals {
             xcs.append(1+rad*cos(theta))
@@ -42,12 +42,12 @@ class Track {
             yis.append(1+(rad-TRACKWIDTH/2)*sin(theta))
         }
         
-//        for i in 0..<50 {
-//            xcs.append(1+rad*cos(thetavals.last!))
-//            xis.append(1+(rad-(TRACKWIDTH/2))*cos(thetavals.last!))
-//            ycs.append(1+rad*sin(thetavals.last!) - (Double(i) / 50.0))
-//            yis.append(1+rad*sin(thetavals.last!) - (Double(i) / 50.0))
-//        }
+        for i in 1...50 {
+            xcs.append(1+rad*cos(thetavals.last!) - (Double(i) / 50.0))
+            xis.append(1+rad*cos(thetavals.last!) - (Double(i) / 50.0))
+            ycs.append(1+rad*sin(thetavals.last!))
+            yis.append(1+(rad-(TRACKWIDTH/2))*sin(thetavals.last!))
+        }
         
 //        xcs = thetavals.map {(theta: Double) -> Double in return 1+rad*cos(theta)}
 //        ycs = thetavals.map {(theta: Double) -> Double in return 1+rad*sin(theta)}

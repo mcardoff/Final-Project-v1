@@ -14,21 +14,22 @@ class timeCostFunction {
     
     func costValue(xs: [Double], ys: [Double], constraint: RacingLineConstraints) -> Double {
         var costVal = 0.0
-        for i in 1..<xs.count-1 {
+        for i in 1..<xs.count-2 {
             let k = constraint.curvatureVal(xs: xs, ys: ys, i: i),
                 dx = xs[i]-xs[i-1],
                 dy = ys[i]-ys[i-1],
                 ds = sqrt(dx*dx+dy*dy)
-//            print(k,dx,dy,ds)
+            print("in cost \(i): \(k),\(dx),\(dy),\(ds)")
+            print("Adding: \(sqrt(abs(k))*ds)")
             costVal += sqrt(abs(k))*ds
         }
         return costVal
     }
     
-    func calcPerturbedParam (_ output: inout Double, _ tempxs: [Double], _ tempys: [Double], _ i: Int, _ tempparams: [Double], _ constraint: RacingLineConstraints, _ idx: Int) {
+    func calcPerturbedParam (_ output: inout Double, _ tempxs: [Double], _ tempys: [Double], _ i: Int, _ tempparams: [Double], _ constraint: RacingLineConstraints, _ idx: Int, costWt: Double, kmaxWt: Double, fricWt: Double, ccvWt: Double, dsWt: Double, onTrackWt: Double) {
         
         print("i \(i)")
-        output = self.costValue(xs: tempxs, ys: tempys, constraint: constraint) * 0.001
+        output = self.costValue(xs: tempxs, ys: tempys, constraint: constraint) * 0.01
         print("Cost: \(output)")
         // have domain restrictions on i
         if i != tempxs.count-1 && i != tempparams.count-1 && i != 0 && i != tempxs.count && i != tempparams.count {
@@ -37,11 +38,11 @@ class timeCostFunction {
                ((abs(tempys[idx] - tempys[idx-1]) > 1e-4) && (abs(tempys[idx+1] - tempys[idx]) > 1e-4)) {
 //                print("inner if")
                 // kmax
-//                let kmaxv = constraint.kmaxConstraintVal(xs: tempxs, ys: tempys, i: idx) / constraint.KMAX
-//                if !kmaxv.isNaN {
-//                    output += 0.00001 * kmaxv
-//                    print("kmax \(kmaxv)")
-//                } else { print("KMAX NAN") }
+                let kmaxv = constraint.kmaxConstraintVal(xs: tempxs, ys: tempys, i: idx) / constraint.KMAX
+                if !kmaxv.isNaN {
+                    output += 0.01 * kmaxv
+                    print("kmax \(kmaxv)")
+                } else { print("KMAX NAN") }
 
                 // friction
                 let fricv = constraint.frictionConstraintVal(xs: tempxs, ys: tempys, i: idx) / 9.81
@@ -60,7 +61,7 @@ class timeCostFunction {
                 // ds
                 let dsv = constraint.dsConstraintVal(xs: tempxs, ys: tempys, i: idx)
                 if !dsv.isNaN {
-                    output += 0.1 * dsv
+                    output += 0.01 * dsv
                     print("dsv \(dsv)")
                 } else { print("dsv NAN") }
             }
@@ -77,7 +78,7 @@ class timeCostFunction {
         }
     }
     
-    func gradient(gradx: inout [Double], grady: inout [Double], xs: [Double], ys: [Double], constraint: RacingLineConstraints) {
+    func gradient(gradx: inout [Double], grady: inout [Double], xs: [Double], ys: [Double], constraint: RacingLineConstraints, costWt: Double, kmaxWt: Double, fricWt: Double, ccvWt: Double, dsWt: Double, onTrackWt: Double) {
         let batchnums = 3 // perturb this number at a time
         var fp : Double, fm : Double
         var tempparams = xs, tempxs = xs, tempys = ys
@@ -101,7 +102,8 @@ class timeCostFunction {
 //            if 0 <= idx && idx < xs.count { tempxs[idx] += finiteDiff /* perturb only x */ }
 //            else { tempys[idx] += finiteDiff }
             fp = 0.0
-            calcPerturbedParam(&fp, tempxs, tempys, i, tempparams, constraint, idx)
+            calcPerturbedParam(&fp, tempxs, tempys, i, tempparams, constraint, idx, costWt: costWt, kmaxWt: kmaxWt, fricWt: fricWt, ccvWt: ccvWt, dsWt: dsWt, onTrackWt: onTrackWt)
+//            calcPerturbedParam(&fp, tempxs, tempys, i, tempparams, constraint, idx, costWt: costWt, fricWt: costWt)
             
             for j in 0..<batchnums {
                 if (tempxs.count - batchnums < idx + j && idx + j < tempxs.count) {
@@ -114,7 +116,7 @@ class timeCostFunction {
 //            if 0 <= idx && idx < xs.count { tempxs[idx] -= 2.0*finiteDiff }
 //            else { tempys[idx] -= 2.0*finiteDiff }
             fm = 0.0
-            calcPerturbedParam(&fm, tempxs, tempys, i, tempparams, constraint, idx)
+            calcPerturbedParam(&fm, tempxs, tempys, i, tempparams, constraint, idx, costWt: costWt, kmaxWt: kmaxWt, fricWt: fricWt, ccvWt: ccvWt, dsWt: dsWt, onTrackWt: onTrackWt)
             
             let gradval = 0.5 * (fp - fm) / finiteDiff
             
@@ -131,9 +133,9 @@ class timeCostFunction {
         
     }
     
-    func valueAndGradient(gradx: inout [Double], grady: inout [Double], xs: [Double], ys: [Double], constraint: RacingLineConstraints) -> Double {
-        self.gradient(gradx: &gradx, grady: &grady, xs: xs, ys: ys, constraint: constraint)
-        return costValue(xs: xs, ys: ys, constraint: constraint)
-    }
+//    func valueAndGradient(gradx: inout [Double], grady: inout [Double], xs: [Double], ys: [Double], constraint: RacingLineConstraints) -> Double {
+//        self.gradient(gradx: &gradx, grady: &grady, xs: xs, ys: ys, constraint: constraint)
+//        return costValue(xs: xs, ys: ys, constraint: constraint)
+//    }
     
 }

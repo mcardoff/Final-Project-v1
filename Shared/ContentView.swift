@@ -39,13 +39,13 @@ struct ContentView: View {
     func calculate() {
         let track = Track()
         
-        var endCriteria = EndCriteria(maxIterations: 1, maxStationaryStateIterations: 10, rootEpsilon: 1.0e-8, functionEpsilon: 1.0e-9, gradientNormEpsilon: 1.0e-5)
-        var costFunc = timeCostFunction()
-        var constraint = RacingLineConstraints()
-        var initialXValue = track.xcs, initialYValue = track.ycs
+        let endCriteria = EndCriteria(maxIterations: 1, maxStationaryStateIterations: 10, rootEpsilon: 1.0e-8, functionEpsilon: 1.0e-9, gradientNormEpsilon: 1.0e-5)
+        let costFunc = timeCostFunction()
+        let constraint = RacingLineConstraints()
+        let initialXValue = track.xcs, initialYValue = track.ycs
         var problem = RacingLineProblem(costFunction: costFunc, constraint: constraint, initialXValues: initialXValue, initialYValues: initialYValue)
-        var solver = GradientDescent(1.0)
-        var solved = solver.minimize(problem: &problem, endCriteria: endCriteria)
+        let solver = GradientDescent(10.0)
+        _ = solver.minimize(problem: &problem, endCriteria: endCriteria)
 //        print(problem.currentXValues)
 //        print(problem.currentXValues)
         

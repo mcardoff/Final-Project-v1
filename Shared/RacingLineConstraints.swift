@@ -58,10 +58,13 @@ class RacingLineConstraints {
             termTwo = (dyb/dsb + dyf/dsf) * (dxf/dsf - dxb/dsb)/(dsf + dsb)
         
 //        print(dxb, dyb, dsb, dxf, dyf, dsf)
-        
+//        print(i)
+        if(i == 154) {
+            print(dxb, dyb, dsb, dxf, dyf, dsf)
+        }
         if (abs(dxb) < 1e-4 && abs(dxf) < 1e-4) || (abs(dyf) < 1e-4 && abs(dyb) < 1e-4) {
             print("returning default")
-            return 0.1
+            return 0.0
         }
         
         return termOne-termTwo
